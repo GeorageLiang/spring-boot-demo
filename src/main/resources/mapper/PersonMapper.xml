@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.my.spring.boot.mapper.PersonMapper">
+	
+	<resultMap type="com.my.spring.boot.model.Person" id="PersonMap">
+		<result property="id" column="uid" />
+		<result property="name" column="username" />
+		<result property="createdTime" column="created_time" />
+	</resultMap>
+	
+	<select id="getAllPersons" resultMap="PersonMap">
+		<![CDATA[
+		select uid, username, created_time from chushou_user_profile limit 10
+		]]>
+	</select>
+	
+	<select id="getPersonById" parameterType="int" resultMap="PersonMap">
+		<![CDATA[
+		select uid, username, created_time from chushou_user_profile where uid = #{id}
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="int">
+		insert into `event_bless_award_201701`(uid,award_id,type,created_time,updated_time) 
+		values (-1,#{id},2,now(),now())
+	</insert>
+	
+</mapper>
