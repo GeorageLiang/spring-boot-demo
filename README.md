@@ -32,5 +32,5 @@
 
 <h4>jar文件</h4>
 <p>工程依赖的jar基本用maven，但是本地工具jar请手动添加依赖</p>
-<span>my-utils-0.0.1-SNAPSHOT.jar：本地编写的一些常用工具类，可自行添加和修改代码</span>
-<span>github地址：https://github.com/CodeTheft/my-utils</span>
+<p>my-utils-0.0.1-SNAPSHOT.jar：本地编写的一些常用工具类，可自行添加和修改代码</p>
+<p>github地址：https://github.com/CodeTheft/my-utils</p>
