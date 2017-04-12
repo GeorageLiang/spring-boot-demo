@@ -1,0 +1,16 @@
+# 创建用户信息表
+DROP TABLE IF EXISTS `spittr`.`user_info`;
+CREATE TABLE `spittr`.`user_info` (
+  `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
+  `nickname` varchar(100) NOT NULL DEFAULT '' COMMENT '昵称',
+  `password` varchar(255) NOT NULL DEFAULT '' COMMENT '登录密码',
+  `gender` tinyint(1) NOT NULL DEFAULT '2' COMMENT '性别，0-男，1-女，2-中',
+  `location` varchar(20) NOT NULL DEFAULT '地球' COMMENT '所在地，目前用太阳系行星，默认地球',
+  `profile` varchar(255) NOT NULL DEFAULT '' COMMENT '个人简介',
+  `birth_day` varchar(10) NOT NULL DEFAULT '' COMMENT '出生日期，如1991-11-01',
+  `registered_time` datetime NOT NULL COMMENT '注册时间',
+  `phone_num` varchar(20) NOT NULL DEFAULT '' COMMENT '手机号',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `unique_nickname` (`nickname`),
+  UNIQUE KEY `unique_phone` (`phone_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='用户信息表';

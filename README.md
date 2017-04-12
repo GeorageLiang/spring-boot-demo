@@ -2,6 +2,11 @@
 <p>spring-boot 框架demo，一个目前不知道会变成什么样的工程</p>
 <p>该项目为练习用，可以随意更改添加，但是要保证提交的代码能运行，而且请添加必要的注释，谢谢</p>
 
+
+<h4>数据库</h4>
+<p>可修改jdbc.properties配置本地数据库，如果新建或修改库或者表，请将对应的SQL上传至sql目录下</p>
+
+
 <h4>本地启动(默认localhost:8080)</h4>
 <ol>
 <li>IDE中运行com.spittr.main.Application.java</li>
