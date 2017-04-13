@@ -1,5 +1,6 @@
 package com.spittr.service;
 
+import com.spittr.model.User;
 import com.spittr.utils.SpittrException;
 
 /**
@@ -49,5 +50,13 @@ public interface UserService {
 	 * @return true已占用， false未占用
 	 */
 	public boolean isExistPhone(String phoneNum) throws SpittrException;
+	
+	/**
+	 * 根据用户id获取用户信息
+	 * 
+	 * @param userId 用户id
+	 * @return 返回用户对象User
+	 */
+	public User getUserInfoById(long userId) throws SpittrException;
 
 }

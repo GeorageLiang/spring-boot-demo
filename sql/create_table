@@ -10,6 +10,7 @@ CREATE TABLE `spittr`.`user_info` (
   `birth_day` varchar(10) NOT NULL DEFAULT '' COMMENT '出生日期，如1991-11-01',
   `registered_time` datetime NOT NULL COMMENT '注册时间',
   `phone_num` varchar(20) NOT NULL DEFAULT '' COMMENT '手机号',
+  `age` int(11) NOT NULL DEFAULT '0' COMMENT '年龄',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `unique_nickname` (`nickname`),
   UNIQUE KEY `unique_phone` (`phone_num`)

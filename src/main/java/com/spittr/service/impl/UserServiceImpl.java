@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spittr.mapper.UserMapper;
+import com.spittr.model.User;
 import com.spittr.redis.UserRedisClient;
 import com.spittr.service.UserService;
 import com.spittr.utils.SpittrException;
 import com.spittr.utils.constant.CodeConstant;
+import com.spittr.utils.convert.UserConvert;
 import com.theft.code.utils.date.DateCalculateUtil;
 import com.theft.code.utils.encrypt.EncryptUtil;
 
@@ -46,17 +48,15 @@ public class UserServiceImpl implements UserService {
 		param.put("phoneNum", phoneNum);
 		param.put("birthDay", birthDay);
 		param.put("registeredTime", now);
+		int age = getAge(birthDay);
+		param.put("age", age);
 		try {
 			// 向mysql插入注册用户信息
 			userMapper.register(param);
 			long userId = (long) param.get("userId");
 			if (userId > 0) {
-				// 获取出生年
-				int birthYear = Integer.valueOf(birthDay.split("-")[0]);
-				// 计算年龄
-				int age = DateCalculateUtil.getCurrentYear(now) - birthYear + 1;
 				// redis插入用户信息
-				userRedis.saveUserInfo(userId, nickname, gender, location, profile, phoneNum, age);
+				userRedis.saveUserInfo(userId, nickname, gender, location, profile, phoneNum, age, birthDay);
 
 				return userId;
 			}
@@ -88,6 +88,45 @@ public class UserServiceImpl implements UserService {
 			throw new SpittrException("error execute userMapper.getUserCountByPhoneNum", e,
 					CodeConstant.EXCEPTION_SERVICE);
 		}
+	}
+
+	@Override
+	public User getUserInfoById(long userId) throws SpittrException {
+		try {
+			Map<String, String> userInfo = userRedis.getUserInfo(userId);
+			User user = new User();
+			user.setUserId(userId);
+			if (userInfo.isEmpty()) {
+				user = userMapper.getUserInfoById(userId);
+				if (user != null) {
+					userRedis.saveUserInfo(userId, user.getNickname(), user.getGender(), user.getLocation(),
+							user.getProfile(), user.getPhoneNum(), getAge(user.getBirthDay()), user.getBirthDay());
+					return user;
+				}
+				return null;
+			}
+
+			UserConvert.map2User(userInfo, user);
+			return user;
+		} catch (Exception e) {
+			LOG.error("error execute userMapper.getUserInfoById", e);
+			throw new SpittrException("error execute userMapper.getUserInfoById", e, CodeConstant.EXCEPTION_SERVICE);
+		}
+	}
+
+	/**
+	 * 计算用户年龄
+	 * 
+	 * @param birthDay
+	 *            出生日期
+	 * @return 当前年龄
+	 */
+	private int getAge(String birthDay) {
+		// 获取出生年
+		int birthYear = Integer.valueOf(birthDay.split("-")[0]);
+		// 计算年龄
+		int age = DateCalculateUtil.getCurrentYear(new Date()) - birthYear + 1;
+		return age;
 	}
 
 }

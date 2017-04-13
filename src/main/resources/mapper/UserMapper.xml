@@ -2,16 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spittr.mapper.UserMapper">
 
-	<insert id="register" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="userId">
+	<insert id="register" parameterType="java.util.HashMap"
+		useGeneratedKeys="true" keyProperty="userId">
 		insert into
-		`user_info` (`nickname`, `password`, `gender`, `location`,
+		`user_info`
+		(`nickname`, `password`, `gender`, `location`,
 		`profile`,
-		`birth_day`, `registered_time`, `phone_num`)
+		`birth_day`,
+		`registered_time`, `phone_num`, `age`)
 		values
 		(#{nickname},
-		#{password}, #{gender}, #{location}, #{profile},
+		#{password},
+		#{gender}, #{location}, #{profile},
 		#{birthDay},
-		#{registeredTime}, #{phoneNum})
+		#{registeredTime},
+		#{phoneNum}, #{age})
 	</insert>
 
 	<select id="getUserCountByNickname" parameterType="java.lang.String"
@@ -24,6 +29,24 @@
 		resultType="java.lang.Integer">
 		select count(1) from `user_info` where `phone_num` =
 		#{phoneNum}
+	</select>
+
+	<select id="getUserInfoById" parameterType="java.lang.Long"
+		resultType="com.spittr.model.User">
+		select
+		`user_id` as userId,
+		`nickname` as nickname,
+		`password` as password,
+		`gender` as gender,
+		`location` as location,
+		`profile` as profile,
+		`birth_day` as birthDay,
+		`registered_time` as
+		registeredTime,
+		`phone_num` as phoneNum,
+		`age` as age
+		from `user_info`
+		where user_id = #{userId}
 	</select>
 
 </mapper>

@@ -90,4 +90,43 @@ public class ParamUtil {
 		}
 	}
 
+	/**
+	 * 长整型数参数处理
+	 * 
+	 * @param param
+	 *            传入参数名
+	 * @param value
+	 *            传入参数值
+	 * @param isRequire
+	 *            是否必填
+	 * @param defaultValue
+	 *            选填参数为空时默认值
+	 * @param nullCode
+	 *            必填参数为空时错误响应码
+	 * @param min
+	 *            传入参数最小值
+	 * @param max
+	 *            传入参数最大值
+	 * @return
+	 * @throws SpittrException
+	 */
+	public static long toLong(String param, Long value, boolean isRequire, long defaultValue, String nullCode, long min,
+			long max) throws SpittrException {
+		if (null != value) {
+			if (value >= min && value <= max) {
+				return value;
+			} else {
+				throw new SpittrException(
+						"param[" + param + "] length must great than " + min + " and less than " + max,
+						CodeConstant.PARAM_OUT_OF_RANGE);
+			}
+		} else {
+			if (isRequire) {
+				throw new SpittrException("param[" + param + "] can not null", nullCode);
+			} else {
+				return defaultValue;
+			}
+		}
+	}
+
 }

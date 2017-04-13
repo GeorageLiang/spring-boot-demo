@@ -15,6 +15,7 @@ import java.util.Date;
  * @property phoneNum 手机号
  * @property birthDay 生日
  * @property registeredTime 注册时间
+ * @property age 年龄
  * 
  * @author chufei
  * @date 2017年4月10日
@@ -40,6 +41,8 @@ public class User implements Serializable {
 	private String birthDay;
 
 	private Date registeredTime;
+
+	private int age;
 
 	public long getUserId() {
 		return userId;
@@ -111,6 +114,14 @@ public class User implements Serializable {
 
 	public void setRegisteredTime(Date registeredTime) {
 		this.registeredTime = registeredTime;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
 	}
 
 }

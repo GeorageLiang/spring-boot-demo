@@ -21,8 +21,28 @@ public class UserRedisClient extends AbstractRedisClient {
 
 	private static final String USER_INFO_KEY = "user_info_%s";
 
+	/**
+	 * 保存用户信息缓存
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param nickname
+	 *            昵称
+	 * @param gender
+	 *            性别
+	 * @param location
+	 *            所在地
+	 * @param profile
+	 *            个人简介
+	 * @param phoneNum
+	 *            手机号
+	 * @param age
+	 *            年龄
+	 * @param birthDay
+	 *            出生日期
+	 */
 	public void saveUserInfo(long userId, String nickname, int gender, String location, String profile, String phoneNum,
-			int age) {
+			int age, String birthDay) {
 		Jedis jedis = null;
 		try {
 			jedis = getJedisIntance();
@@ -34,6 +54,7 @@ public class UserRedisClient extends AbstractRedisClient {
 			hash.put("location", location);
 			hash.put("profile", profile);
 			hash.put("phoneNum", phoneNum);
+			hash.put("birthDay", birthDay);
 			hash.put("age", String.valueOf(age));
 			jedis.hmset(key, hash);
 			// 缓存用户信息30天
@@ -43,6 +64,77 @@ public class UserRedisClient extends AbstractRedisClient {
 		} finally {
 			closeJedis(jedis);
 		}
+	}
+
+	/**
+	 * 更新用户信息缓存
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param nickname
+	 *            昵称
+	 * @param gender
+	 *            性别
+	 * @param location
+	 *            所在地
+	 * @param profile
+	 *            个人简介
+	 * @param phoneNum
+	 *            手机号
+	 * @param age
+	 *            年龄
+	 * @param birthDay
+	 *            出生日期
+	 */
+	public void updateUserInfo(long userId, String nickname, int gender, String location, String profile,
+			String phoneNum, int age, String birthDay) {
+		Jedis jedis = null;
+		try {
+			jedis = getJedisIntance();
+			String key = String.format(USER_INFO_KEY, userId);
+			Map<String, String> hash = jedis.hgetAll(key);
+			if (hash != null) {
+				hash.put("nickname", nickname);
+				hash.put("gender", String.valueOf(gender));
+				hash.put("location", location);
+				hash.put("profile", profile);
+				hash.put("phoneNum", phoneNum);
+				hash.put("birthDay", birthDay);
+				hash.put("age", String.valueOf(age));
+				jedis.hmset(key, hash);
+				// 缓存用户信息30天
+				jedis.expire(key, 60 * 60 * 24 * 30);
+			} else {
+				saveUserInfo(userId, nickname, gender, location, profile, phoneNum, age, birthDay);
+			}
+		} catch (Exception e) {
+			LOG.error("error update user_info_" + userId, e);
+		} finally {
+			closeJedis(jedis);
+		}
+	}
+
+	/**
+	 * 获取用户信息缓存
+	 * 
+	 * @param userId
+	 *            用户id
+	 */
+	public Map<String, String> getUserInfo(long userId) {
+		Jedis jedis = null;
+		Map<String, String> userInfo = new HashMap<String, String>();
+		try {
+			jedis = getJedisIntance();
+			String key = String.format(USER_INFO_KEY, userId);
+			userInfo = jedis.hgetAll(key);
+			return userInfo;
+		} catch (Exception e) {
+			LOG.error("error get user_info_" + userId, e);
+		} finally {
+			closeJedis(jedis);
+		}
+
+		return userInfo;
 	}
 
 }

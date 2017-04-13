@@ -2,6 +2,8 @@ package com.spittr.mapper;
 
 import java.util.Map;
 
+import com.spittr.model.User;
+
 /**
  * 用户相关数据操作
  * 
@@ -29,5 +31,13 @@ public interface UserMapper {
 	 * @return 返回用户数量
 	 */
 	public int getUserCountByPhoneNum(String phoneNum);
+	
+	/**
+	 * 根据用户id获取用户信息
+	 * 
+	 * @param userId 用户id
+	 * @return 返回用户对象User
+	 */
+	public User getUserInfoById(long userId);
 	
 }
