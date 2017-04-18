@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public long register(String nickname, String password, int gender, String location, String profile, String phoneNum,
-			String birthDay) throws SpittrException {
+			String birthDay) {
 		Date now = new Date();
 		password = new EncryptUtil(password, null, null).encodeBySalt();
 		if (password == null) {
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean isExistNickname(String nickname) throws SpittrException {
+	public boolean isExistNickname(String nickname) {
 		try {
 			return userMapper.getUserCountByNickname(nickname) > 0;
 		} catch (Exception e) {
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean isExistPhone(String phoneNum) throws SpittrException {
+	public boolean isExistPhone(String phoneNum) {
 		try {
 			return userMapper.getUserCountByPhoneNum(phoneNum) > 0;
 		} catch (Exception e) {
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserInfoById(long userId) throws SpittrException {
+	public User getUserInfoById(long userId) {
 		try {
 			Map<String, String> userInfo = userRedis.getUserInfo(userId);
 			User user = new User();
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 				return null;
 			}
 
-			UserConvert.map2User(userInfo, user);
+			user = UserConvert.map2User(userInfo, user);
 			return user;
 		} catch (Exception e) {
 			LOG.error("error execute userMapper.getUserInfoById", e);

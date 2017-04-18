@@ -6,7 +6,7 @@ package com.spittr.utils;
  * @author chufei
  * @date 2017年4月10日
  */
-public class SpittrException extends Exception {
+public class SpittrException extends RuntimeException {
 
 	/**
 	 * 

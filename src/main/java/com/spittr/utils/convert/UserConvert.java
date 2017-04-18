@@ -21,34 +21,37 @@ public class UserConvert {
 	 * @param user
 	 * @return
 	 */
-	public static void map2User(Map<String, String> map, User user) {
-		if (map.get("nickname") != null) {
-			user.setNickname(map.get("nickname"));
+	public static User map2User(Map<String, String> map, User user) {
+		if (user != null) {
+			if (map.get("nickname") != null) {
+				user.setNickname(map.get("nickname"));
+			}
+			if (map.get("password") != null) {
+				user.setPassword(map.get("password"));
+			}
+			if (map.get("gender") != null) {
+				user.setGender(Integer.parseInt(map.get("gender")));
+			}
+			if (map.get("age") != null) {
+				user.setAge(Integer.parseInt(map.get("age")));
+			}
+			if (map.get("birthDay") != null) {
+				user.setBirthDay(map.get("birthDay"));
+			}
+			if (map.get("location") != null) {
+				user.setLocation(map.get("location"));
+			}
+			if (map.get("phoneNum") != null) {
+				user.setPhoneNum(map.get("phoneNum"));
+			}
+			if (map.get("profile") != null) {
+				user.setProfile(map.get("profile"));
+			}
+			if (map.get("registeredTime") != null) {
+				user.setRegisteredTime(new Date(Long.parseLong(map.get("registeredTime"))));
+			}
 		}
-		if (map.get("password") != null) {
-			user.setPassword(map.get("password"));
-		}
-		if (map.get("gender") != null) {
-			user.setGender(Integer.parseInt(map.get("gender")));
-		}
-		if (map.get("age") != null) {
-			user.setAge(Integer.parseInt(map.get("age")));
-		}
-		if (map.get("birthDay") != null) {
-			user.setBirthDay(map.get("birthDay"));
-		}
-		if (map.get("location") != null) {
-			user.setLocation(map.get("location"));
-		}
-		if (map.get("phoneNum") != null) {
-			user.setPhoneNum(map.get("phoneNum"));
-		}
-		if (map.get("profile") != null) {
-			user.setProfile(map.get("profile"));
-		}
-		if (map.get("registeredTime") != null) {
-			user.setRegisteredTime(new Date(Long.parseLong(map.get("registeredTime"))));
-		}
+		return user;
 	}
 	
 	/**
