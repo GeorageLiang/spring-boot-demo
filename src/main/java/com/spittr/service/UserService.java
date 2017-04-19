@@ -33,6 +33,19 @@ public interface UserService {
 			String birthDay);
 
 	/**
+	 * 用户登录
+	 * 
+	 * @param userId
+	 *            用户id，选填
+	 * @param phoneNum
+	 *            手机号，选填
+	 * @param password
+	 *            登录密码
+	 * @return 返回用户对象
+	 */
+	public User login(long userId, String phoneNum, String password);
+
+	/**
 	 * 判断用户名是否占用
 	 * 
 	 * @param nickname

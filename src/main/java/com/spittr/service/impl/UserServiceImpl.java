@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 				return userId;
 			}
 		} catch (Exception e) {
-			LOG.error("error execute userMapper.register", e);
+			LOG.error("error execute userMapper.register, register-param: " + param.toString(), e);
 			throw new SpittrException("error execute userMapper.register", e, CodeConstant.EXCEPTION_SERVICE);
 		}
 
@@ -69,11 +69,43 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User login(long userId, String phoneNum, String password) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("password", new EncryptUtil(password, null, null).encodeBySalt());
+		if (userId > 0) {
+			param.put("userId", userId);
+			try {
+				userId = userMapper.loginByUserId(param) != null ? userId : 0;
+			} catch (Exception e) {
+				LOG.error("error execute userMapper.loginByUserId, login-param: " + param.toString(), e);
+				throw new SpittrException("error execute userMapper.loginByUserId", e, CodeConstant.EXCEPTION_SERVICE);
+			}
+		} else {
+			param.put("phoneNum", phoneNum);
+			try {
+				Long _userId = userMapper.loginByPhone(param);
+				userId = _userId != null ? _userId : 0;
+			} catch (Exception e) {
+				LOG.error("error execute userMapper.loginByPhone, login-param: " + param.toString(), e);
+				throw new SpittrException("error execute userMapper.loginByPhone", e, CodeConstant.EXCEPTION_SERVICE);
+			}
+		}
+
+		User user = getUserInfoById(userId);
+		if (user != null) {
+			// TODO 设置用户登录token
+			return user;
+		}
+
+		return null;
+	}
+
+	@Override
 	public boolean isExistNickname(String nickname) {
 		try {
 			return userMapper.getUserCountByNickname(nickname) > 0;
 		} catch (Exception e) {
-			LOG.error("error execute userMapper.getUserCountByNickname", e);
+			LOG.error("error execute userMapper.getUserCountByNickname, nickname: " + nickname, e);
 			throw new SpittrException("error execute userMapper.getUserCountByNickname", e,
 					CodeConstant.EXCEPTION_SERVICE);
 		}
@@ -84,7 +116,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			return userMapper.getUserCountByPhoneNum(phoneNum) > 0;
 		} catch (Exception e) {
-			LOG.error("error execute userMapper.getUserCountByPhoneNum", e);
+			LOG.error("error execute userMapper.getUserCountByPhoneNum, phoneNum: " + phoneNum, e);
 			throw new SpittrException("error execute userMapper.getUserCountByPhoneNum", e,
 					CodeConstant.EXCEPTION_SERVICE);
 		}
@@ -109,7 +141,7 @@ public class UserServiceImpl implements UserService {
 			user = UserConvert.map2User(userInfo, user);
 			return user;
 		} catch (Exception e) {
-			LOG.error("error execute userMapper.getUserInfoById", e);
+			LOG.error("error execute userMapper.getUserInfoById, userId: " + userId, e);
 			throw new SpittrException("error execute userMapper.getUserInfoById", e, CodeConstant.EXCEPTION_SERVICE);
 		}
 	}

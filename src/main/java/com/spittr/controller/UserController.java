@@ -32,7 +32,7 @@ public class UserController {
 	@RequestMapping("/info/{userId}")
 	public String getUserInfo(@PathVariable(value = "userId") long userId) {
 		JsonObject result = new JsonObject();
-		
+
 		try {
 			userId = ParamUtil.toLong("userId", userId, true, -1, CodeConstant.ERR_USERID_MISS, 1, Long.MAX_VALUE);
 		} catch (SpittrException e) {
@@ -44,18 +44,18 @@ public class UserController {
 			result.addProperty("code", CodeConstant.EXCEPTION_GET_PARAM);
 			return result.toString();
 		}
-		
+
 		try {
 			User user = userService.getUserInfoById(userId);
-			result = UserConvert.user2Json(user, result);
+			result = UserConvert.user2Json(user);
 			result.addProperty("code", CodeConstant.SUCCESS);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
 			result.addProperty("code", e.getErrorCode());
 			return result.toString();
 		}
-		
+
 		return result.toString();
 	}
-	
+
 }

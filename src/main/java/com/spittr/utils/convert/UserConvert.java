@@ -53,7 +53,7 @@ public class UserConvert {
 		}
 		return user;
 	}
-	
+
 	/**
 	 * User对象转化Json对象
 	 * 
@@ -61,10 +61,12 @@ public class UserConvert {
 	 * @param jsonObject
 	 * @return
 	 */
-	public static JsonObject user2Json(User user, JsonObject jsonObject) {
+	public static JsonObject user2Json(User user) {
+		JsonObject jsonObject = new JsonObject();
 		if (user != null) {
 			if (user.getNickname() != null) {
-				jsonObject.addProperty("nickname", user.getNickname());;
+				jsonObject.addProperty("nickname", user.getNickname());
+				;
 			}
 			jsonObject.addProperty("gender", user.getGender());
 			jsonObject.addProperty("age", user.getAge());
@@ -86,5 +88,5 @@ public class UserConvert {
 		}
 		return jsonObject;
 	}
-	
+
 }

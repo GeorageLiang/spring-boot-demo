@@ -12,27 +12,32 @@ public class CodeConstant {
 	 * 响应成功
 	 */
 	public static final String SUCCESS = "0000";
-	
+
 	/**
 	 * 获取参数异常
 	 */
 	public static final String EXCEPTION_GET_PARAM = "0001";
-	
+
 	/**
 	 * 参数超出范围
 	 */
 	public static final String PARAM_OUT_OF_RANGE = "0002";
-	
+
 	/**
 	 * 业务处理异常
 	 */
 	public static final String EXCEPTION_SERVICE = "0003";
-	
+
 	/**
 	 * 注册失败
 	 */
 	public static final String FAIL_REGISTER = "0004";
-	
+
+	/**
+	 * 登录失败
+	 */
+	public static final String FAIL_LOGIN = "0005";
+
 	/**
 	 * 用户昵称为空
 	 */
@@ -42,14 +47,14 @@ public class CodeConstant {
 	 * 登录密码为空
 	 */
 	public static final String ERR_PASSWORD_MISS = "1002";
-	
+
 	/**
 	 * 手机号为空
 	 */
 	public static final String ERR_PHONE_MISS = "1003";
-	
+
 	/**
-	 * 用户id不存在
+	 * 用户id为空
 	 */
 	public static final String ERR_USERID_MISS = "1004";
 
@@ -62,5 +67,10 @@ public class CodeConstant {
 	 * 手机号已存在
 	 */
 	public static final String ERR_PHONE_EXIST = "1006";
-	
+
+	/**
+	 * 用户不存在
+	 */
+	public static final String ERR_USER_NOT_EXIST = "1007";
+
 }

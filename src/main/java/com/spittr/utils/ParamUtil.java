@@ -32,7 +32,7 @@ public class ParamUtil {
 	 * @throws SpittrException
 	 */
 	public static String toString(String param, String value, boolean isRequire, String defaultValue, String nullCode,
-			int minLength, int maxLength) throws SpittrException {
+			int minLength, int maxLength) {
 		if (StringUtil.strIsNull(value)) {
 			if (isRequire) {
 				throw new SpittrException("param[" + param + "] can not null", nullCode);
@@ -72,7 +72,7 @@ public class ParamUtil {
 	 * @throws SpittrException
 	 */
 	public static int toInt(String param, Integer value, boolean isRequire, int defaultValue, String nullCode, int min,
-			int max) throws SpittrException {
+			int max) {
 		if (null != value) {
 			if (value >= min && value <= max) {
 				return value;
@@ -111,7 +111,7 @@ public class ParamUtil {
 	 * @throws SpittrException
 	 */
 	public static long toLong(String param, Long value, boolean isRequire, long defaultValue, String nullCode, long min,
-			long max) throws SpittrException {
+			long max) {
 		if (null != value) {
 			if (value >= min && value <= max) {
 				return value;

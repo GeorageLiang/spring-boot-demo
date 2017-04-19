@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
+import com.spittr.model.User;
 import com.spittr.service.UserService;
 import com.spittr.utils.ParamUtil;
 import com.spittr.utils.SpittrException;
 import com.spittr.utils.constant.CodeConstant;
 import com.spittr.utils.constant.UserConstant;
+import com.spittr.utils.convert.UserConvert;
 
 /**
  * 首页核心控制器 包括 用户注册 用户登录 用户登出
@@ -87,7 +89,7 @@ public class IndexController {
 				result.addProperty("code", CodeConstant.ERR_PHONE_EXIST);
 				return result.toString();
 			}
-			
+
 			// 注册用户信息
 			long userId = userService.register(nickname, password, gender, location, profile, phoneNum, birthDay);
 			if (userId < 0) {
@@ -97,8 +99,51 @@ public class IndexController {
 			}
 			result.addProperty("userId", userId);
 
-			// TODO 用户登录
+			// 用户登录
+			String loginResult = login(request, userId, phoneNum, password);
 
+			return loginResult;
+		} catch (SpittrException e) {
+			LOG.error(e.getMessage());
+			result.addProperty("code", e.getErrorCode());
+			return result.toString();
+		}
+	}
+
+	/**
+	 * 用户登录
+	 */
+	@RequestMapping("/login")
+	@ResponseBody
+	public String login(HttpRequest request,
+			@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
+			@RequestParam(value = "phoneNum", required = false) String phoneNum,
+			@RequestParam(value = "password") String password) {
+		JsonObject result = new JsonObject();
+
+		try {
+			userId = ParamUtil.toLong("userId", userId == 0 ? null : userId, false, 0, null, 1, Long.MAX_VALUE);
+			phoneNum = ParamUtil.toString("phoneNum", phoneNum, false, "", null, 1, 20);
+			password = ParamUtil.toString("password", password, true, "", CodeConstant.ERR_PASSWORD_MISS, 1, 255);
+		} catch (SpittrException e) {
+			LOG.error(e.getMessage());
+			result.addProperty("code", e.getErrorCode());
+			return result.toString();
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			result.addProperty("code", CodeConstant.EXCEPTION_GET_PARAM);
+			return result.toString();
+		}
+
+		try {
+			User user = userService.login(userId, phoneNum, password);
+			if (user == null) {
+				result.addProperty("code", CodeConstant.ERR_USER_NOT_EXIST);
+				return result.toString();
+			}
+
+			result.addProperty("userId", userId);
+			result.add("user", UserConvert.user2Json(user));
 			result.addProperty("code", CodeConstant.SUCCESS);
 			return result.toString();
 		} catch (SpittrException e) {
