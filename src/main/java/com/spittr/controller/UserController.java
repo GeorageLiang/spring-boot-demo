@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
@@ -30,6 +31,7 @@ public class UserController {
 	private UserService userService;
 
 	@RequestMapping("/info/{userId}")
+	@ResponseBody
 	public String getUserInfo(@PathVariable(value = "userId") long userId) {
 		JsonObject result = new JsonObject();
 
@@ -47,7 +49,7 @@ public class UserController {
 
 		try {
 			User user = userService.getUserInfoById(userId);
-			result = UserConvert.user2Json(user);
+			result.add("userInfo", UserConvert.user2Json(user));
 			result.addProperty("code", CodeConstant.SUCCESS);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());

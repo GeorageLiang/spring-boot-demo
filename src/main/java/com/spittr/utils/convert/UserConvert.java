@@ -66,7 +66,6 @@ public class UserConvert {
 		if (user != null) {
 			if (user.getNickname() != null) {
 				jsonObject.addProperty("nickname", user.getNickname());
-				;
 			}
 			jsonObject.addProperty("gender", user.getGender());
 			jsonObject.addProperty("age", user.getAge());

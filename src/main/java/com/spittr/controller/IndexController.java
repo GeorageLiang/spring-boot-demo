@@ -2,7 +2,6 @@ package com.spittr.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,7 +49,7 @@ public class IndexController {
 	 */
 	@RequestMapping("/register")
 	@ResponseBody
-	public String register(HttpRequest request, @RequestParam(value = "nickname", required = false) String nickname,
+	public String register(@RequestParam(value = "nickname", required = false) String nickname,
 			@RequestParam(value = "password", required = false) String password,
 			@RequestParam(value = "gender", required = false, defaultValue = "2") int gender,
 			@RequestParam(value = "location", required = false) String location,
@@ -100,7 +99,7 @@ public class IndexController {
 			result.addProperty("userId", userId);
 
 			// 用户登录
-			String loginResult = login(request, userId, phoneNum, password);
+			String loginResult = login(userId, phoneNum, password);
 
 			return loginResult;
 		} catch (SpittrException e) {
@@ -115,8 +114,7 @@ public class IndexController {
 	 */
 	@RequestMapping("/login")
 	@ResponseBody
-	public String login(HttpRequest request,
-			@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
+	public String login(@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
 			@RequestParam(value = "phoneNum", required = false) String phoneNum,
 			@RequestParam(value = "password") String password) {
 		JsonObject result = new JsonObject();
@@ -142,8 +140,8 @@ public class IndexController {
 				return result.toString();
 			}
 
-			result.addProperty("userId", userId);
-			result.add("user", UserConvert.user2Json(user));
+			result.addProperty("userId", user.getUserId());
+			result.add("userInfo", UserConvert.user2Json(user));
 			result.addProperty("code", CodeConstant.SUCCESS);
 			return result.toString();
 		} catch (SpittrException e) {

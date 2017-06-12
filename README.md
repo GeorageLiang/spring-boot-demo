@@ -15,18 +15,11 @@
 </ol>
 
 
-<h4>xml文件</h4>
-<ul>
-<li>spring-spittr-container.xml：spring通用配置</li>
-<li>spring-spittr-datasource.xml：datasource配置，如新增db，请加到该文件</li>
-<li>spring-spittr-mapper.xml：mybatis映射配置，如新增mapper，请加到该文件</li>
-</ul>
-
-
 <h4>properties文件</h4>
 <ul>
 <li>jdbc.properties：数据库配置文件，请根据本地配置修改</li>
 <li>redis.properties：redis配置文件，请根据本地配置修改</li>
+<li>application.properties：spring-boot通用配置文件，请根据本地配置修改</li>
 </ul>
 
 
