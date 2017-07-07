@@ -14,7 +14,7 @@ public class SpittrException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	private String errorCode;
-	
+
 	public SpittrException() {
 		super();
 	}
@@ -27,19 +27,19 @@ public class SpittrException extends RuntimeException {
 		super(msg);
 		this.errorCode = errorCode;
 	}
-	
+
 	public SpittrException(Throwable e, String errorCode) {
 		super(e);
 		this.errorCode = errorCode;
 	}
-	
+
 	public SpittrException(String msg, Throwable e, String errorCode) {
 		super(msg, e);
 		this.errorCode = errorCode;
 	}
-	
+
 	public String getErrorCode() {
 		return errorCode;
 	}
-	
+
 }

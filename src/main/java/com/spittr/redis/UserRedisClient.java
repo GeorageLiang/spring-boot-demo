@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import com.spittr.utils.constant.JedisResourceConstant;
+
 import redis.clients.jedis.Jedis;
 
 /**
@@ -45,7 +47,7 @@ public class UserRedisClient extends AbstractRedisClient {
 			int age, String birthDay) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance();
+			jedis = getJedisIntance(JedisResourceConstant.USER_RESOURCE);
 			String key = String.format(USER_INFO_KEY, userId);
 			Map<String, String> hash = new HashMap<String, String>();
 			hash.put("userId", String.valueOf(userId));
@@ -58,7 +60,7 @@ public class UserRedisClient extends AbstractRedisClient {
 			hash.put("age", String.valueOf(age));
 			jedis.hmset(key, hash);
 			// 缓存用户信息30天
-			jedis.expire(key, 60 * 60 * 24 * 30);
+			jedis.expire(key, 30 * 24 * 60 * 60);
 		} catch (Exception e) {
 			LOG.error("error save user_info_" + userId, e);
 		} finally {
@@ -90,7 +92,7 @@ public class UserRedisClient extends AbstractRedisClient {
 			String phoneNum, int age, String birthDay) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance();
+			jedis = getJedisIntance(JedisResourceConstant.USER_RESOURCE);
 			String key = String.format(USER_INFO_KEY, userId);
 			Map<String, String> hash = jedis.hgetAll(key);
 			if (hash != null) {
@@ -103,7 +105,7 @@ public class UserRedisClient extends AbstractRedisClient {
 				hash.put("age", String.valueOf(age));
 				jedis.hmset(key, hash);
 				// 缓存用户信息30天
-				jedis.expire(key, 60 * 60 * 24 * 30);
+				jedis.expire(key, 30 * 24 * 60 * 60);
 			} else {
 				saveUserInfo(userId, nickname, gender, location, profile, phoneNum, age, birthDay);
 			}
@@ -119,15 +121,15 @@ public class UserRedisClient extends AbstractRedisClient {
 	 * 
 	 * @param userId
 	 *            用户id
+	 * @return 返回用户信息hash
 	 */
 	public Map<String, String> getUserInfo(long userId) {
 		Jedis jedis = null;
 		Map<String, String> userInfo = new HashMap<String, String>();
 		try {
-			jedis = getJedisIntance();
+			jedis = getJedisIntance(JedisResourceConstant.USER_RESOURCE);
 			String key = String.format(USER_INFO_KEY, userId);
 			userInfo = jedis.hgetAll(key);
-			return userInfo;
 		} catch (Exception e) {
 			LOG.error("error get user_info_" + userId, e);
 		} finally {

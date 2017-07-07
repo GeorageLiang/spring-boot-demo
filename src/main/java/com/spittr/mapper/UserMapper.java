@@ -24,9 +24,10 @@ public interface UserMapper {
 	 * @param param
 	 *            参数集合
 	 */
-	@Insert(value = "insert into `user_info` (`nickname`, `password`, `gender`, `location`, `profile`, `birth_day`, `registered_time`, `phone_num`, `age`)" 
-			+ "	values (#{nickname}, #{password}, #{gender}, #{location}, #{profile}, #{birthDay}, #{registeredTime}, #{phoneNum}, #{age})")
-	@SelectKey(before = false, keyProperty = "userId", resultType = Long.class, statement = { "SELECT LAST_INSERT_ID()" })
+	@Insert(value = "insert into `user_info` (`nickname`, `password`, `gender`, `location`, `profile`, `birth_day`, `registered_time`, `phone_num`, `age`, `registered_platform`)"
+			+ "	values (#{nickname}, #{password}, #{gender}, #{location}, #{profile}, #{birthDay}, #{registeredTime}, #{phoneNum}, #{age}, #{registeredPlatform})")
+	@SelectKey(before = false, keyProperty = "userId", resultType = Long.class, statement = {
+			"SELECT LAST_INSERT_ID()" })
 	public void register(Map<String, Object> param);
 
 	/**
@@ -76,18 +77,10 @@ public interface UserMapper {
 	 *            用户id
 	 * @return 返回用户对象User
 	 */
-	@Select(value = "select"
-			+ " `user_id` as userId," 
-			+ "	`nickname` as nickname,"
-			+ "	`password` as password," 
-			+ " `gender` as gender," 
-			+ "	`location` as location,"
-			+ "	`profile` as profile," 
-			+ "	`birth_day` as birthDay," 
-			+ "	`registered_time` as registeredTime," 
-			+ "	`phone_num` as phoneNum," 
-			+ "	`age` as age"
-			+ "	from `user_info` where user_id = #{userId}")
+	@Select(value = "select" + " `user_id` as userId," + "	`nickname` as nickname," + "	`password` as password,"
+			+ " `gender` as gender," + "	`location` as location," + "	`profile` as profile,"
+			+ "	`birth_day` as birthDay," + "	`registered_time` as registeredTime," + "	`phone_num` as phoneNum,"
+			+ "	`age` as age" + "	from `user_info` where user_id = #{userId}")
 	public User getUserInfoById(long userId);
 
 }

@@ -27,10 +27,12 @@ public interface UserService {
 	 *            手机号
 	 * @param birthDay
 	 *            出生日期
+	 * @param registeredPlatform
+	 *            注册平台
 	 * @return 返回用户id
 	 */
 	public long register(String nickname, String password, int gender, String location, String profile, String phoneNum,
-			String birthDay);
+			String birthDay, int registeredPlatform);
 
 	/**
 	 * 用户登录
@@ -44,6 +46,20 @@ public interface UserService {
 	 * @return 返回用户对象
 	 */
 	public User login(long userId, String phoneNum, String password);
+
+	/**
+	 * 记录用户登录信息
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param token
+	 *            登录token
+	 * @param ip
+	 *            登录ip
+	 * @param platform
+	 *            登录平台
+	 */
+	public void loginLog(long userId, String token, String ip, int platform);
 
 	/**
 	 * 判断用户名是否占用

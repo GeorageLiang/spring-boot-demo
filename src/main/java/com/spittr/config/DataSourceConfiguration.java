@@ -12,6 +12,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * 数据库连接配置类
+ * 
  * @author chufei
  * @date 2017年6月12日
  */

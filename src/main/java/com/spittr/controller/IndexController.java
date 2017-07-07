@@ -1,8 +1,12 @@
 package com.spittr.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +28,7 @@ import com.spittr.utils.convert.UserConvert;
  */
 @RestController
 @RequestMapping(value = "/")
-public class IndexController {
+public class IndexController extends AbstractApiController {
 
 	private static Logger LOG = Logger.getLogger(IndexController.class);
 
@@ -47,9 +51,10 @@ public class IndexController {
 	/**
 	 * 用户注册
 	 */
-	@RequestMapping("/register")
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	@ResponseBody
-	public String register(@RequestParam(value = "nickname", required = false) String nickname,
+	public String register(HttpServletRequest request, @RequestHeader(value = "User-Agent") String userAgent,
+			@RequestParam(value = "nickname", required = false) String nickname,
 			@RequestParam(value = "password", required = false) String password,
 			@RequestParam(value = "gender", required = false, defaultValue = "2") int gender,
 			@RequestParam(value = "location", required = false) String location,
@@ -89,8 +94,10 @@ public class IndexController {
 				return result.toString();
 			}
 
+			int platform = getPlatform(userAgent);
 			// 注册用户信息
-			long userId = userService.register(nickname, password, gender, location, profile, phoneNum, birthDay);
+			long userId = userService.register(nickname, password, gender, location, profile, phoneNum, birthDay,
+					platform);
 			if (userId < 0) {
 				result.addProperty("code", CodeConstant.FAIL_REGISTER);
 				result.addProperty("message", "registered failed!");
@@ -99,7 +106,7 @@ public class IndexController {
 			result.addProperty("userId", userId);
 
 			// 用户登录
-			String loginResult = login(userId, phoneNum, password);
+			String loginResult = login(request, userAgent, userId, phoneNum, password);
 
 			return loginResult;
 		} catch (SpittrException e) {
@@ -112,9 +119,10 @@ public class IndexController {
 	/**
 	 * 用户登录
 	 */
-	@RequestMapping("/login")
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
-	public String login(@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
+	public String login(HttpServletRequest request, @RequestHeader(value = "User-Agent") String userAgent,
+			@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
 			@RequestParam(value = "phoneNum", required = false) String phoneNum,
 			@RequestParam(value = "password") String password) {
 		JsonObject result = new JsonObject();
@@ -140,15 +148,32 @@ public class IndexController {
 				return result.toString();
 			}
 
+			// TODO 获取用户登录token
+			String token = "";
+
+			String ip = getRemoteIp(request);
+			int platform = getPlatform(userAgent);
+			userService.loginLog(userId, token, ip, platform);
+
 			result.addProperty("userId", user.getUserId());
 			result.add("userInfo", UserConvert.user2Json(user));
 			result.addProperty("code", CodeConstant.SUCCESS);
-			return result.toString();
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
 			result.addProperty("code", e.getErrorCode());
-			return result.toString();
 		}
+
+		return result.toString();
 	}
 
+	/**
+	 * 用户退出登录
+	 */
+	@RequestMapping("/logout")
+	@ResponseBody
+	public String login(HttpServletRequest request,
+			@RequestParam(value = "userId", required = false, defaultValue = "0") long userId) {
+
+		return "";
+	}
 }

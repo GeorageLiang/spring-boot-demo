@@ -8,10 +8,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spittr.mapper.LoginInfoMapper;
 import com.spittr.mapper.UserMapper;
 import com.spittr.model.User;
 import com.spittr.redis.UserRedisClient;
 import com.spittr.service.UserService;
+import com.spittr.utils.LogUtil;
 import com.spittr.utils.SpittrException;
 import com.spittr.utils.constant.CodeConstant;
 import com.spittr.utils.convert.UserConvert;
@@ -27,11 +29,14 @@ public class UserServiceImpl implements UserService {
 	private UserMapper userMapper;
 
 	@Autowired
+	private LoginInfoMapper loginInfoMapper;
+
+	@Autowired
 	private UserRedisClient userRedis;
 
 	@Override
 	public long register(String nickname, String password, int gender, String location, String profile, String phoneNum,
-			String birthDay) {
+			String birthDay, int registeredPlatform) {
 		Date now = new Date();
 		password = new EncryptUtil(password, null, null).encodeBySalt();
 		if (password == null) {
@@ -39,21 +44,22 @@ public class UserServiceImpl implements UserService {
 			throw new SpittrException("error to encrypt password", CodeConstant.EXCEPTION_SERVICE);
 		}
 		// 数据库插入用户注册信息
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("nickname", nickname);
-		param.put("password", password);
-		param.put("gender", gender);
-		param.put("location", location);
-		param.put("profile", profile);
-		param.put("phoneNum", phoneNum);
-		param.put("birthDay", birthDay);
-		param.put("registeredTime", now);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("nickname", nickname);
+		params.put("password", password);
+		params.put("gender", gender);
+		params.put("location", location);
+		params.put("profile", profile);
+		params.put("phoneNum", phoneNum);
+		params.put("birthDay", birthDay);
+		params.put("registeredTime", now);
+		params.put("registeredPlatform", registeredPlatform);
 		int age = getAge(birthDay);
-		param.put("age", age);
+		params.put("age", age);
 		try {
 			// 向mysql插入注册用户信息
-			userMapper.register(param);
-			long userId = (long) param.get("userId");
+			userMapper.register(params);
+			long userId = (long) params.get("userId");
 			if (userId > 0) {
 				// redis插入用户信息
 				userRedis.saveUserInfo(userId, nickname, gender, location, profile, phoneNum, age, birthDay);
@@ -61,7 +67,7 @@ public class UserServiceImpl implements UserService {
 				return userId;
 			}
 		} catch (Exception e) {
-			LOG.error("error execute userMapper.register, register-param: " + param.toString(), e);
+			LOG.error("error execute userMapper.register, register-param: " + params.toString(), e);
 			throw new SpittrException("error execute userMapper.register", e, CodeConstant.EXCEPTION_SERVICE);
 		}
 
@@ -91,13 +97,33 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
-		User user = getUserInfoById(userId);
-		if (user != null) {
-			// TODO 设置用户登录token
-			return user;
+		if (userId > 0) {
+			User user = getUserInfoById(userId);
+			if (user != null) {
+				// TODO 设置用户登录token
+
+				return user;
+			}
 		}
 
 		return null;
+	}
+
+	@Override
+	public void loginLog(long userId, String token, String ip, int platform) {
+		Date now = new Date();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("token", token);
+		params.put("ip", ip);
+		params.put("platform", platform);
+		params.put("loginTime", now);
+		try {
+			loginInfoMapper.loginLog(params);
+			LogUtil.loginInfoLog(userId, token, ip, platform, now);
+		} catch (Exception e) {
+			LogUtil.loginInfoErrorLog(userId, token, ip, platform, now);
+		}
 	}
 
 	@Override
@@ -126,10 +152,8 @@ public class UserServiceImpl implements UserService {
 	public User getUserInfoById(long userId) {
 		try {
 			Map<String, String> userInfo = userRedis.getUserInfo(userId);
-			User user = new User();
-			user.setUserId(userId);
 			if (userInfo.isEmpty()) {
-				user = userMapper.getUserInfoById(userId);
+				User user = userMapper.getUserInfoById(userId);
 				if (user != null) {
 					userRedis.saveUserInfo(userId, user.getNickname(), user.getGender(), user.getLocation(),
 							user.getProfile(), user.getPhoneNum(), getAge(user.getBirthDay()), user.getBirthDay());
@@ -138,8 +162,7 @@ public class UserServiceImpl implements UserService {
 				return null;
 			}
 
-			user = UserConvert.map2User(userInfo, user);
-			return user;
+			return UserConvert.map2User(userInfo);
 		} catch (Exception e) {
 			LOG.error("error execute userMapper.getUserInfoById, userId: " + userId, e);
 			throw new SpittrException("error execute userMapper.getUserInfoById", e, CodeConstant.EXCEPTION_SERVICE);

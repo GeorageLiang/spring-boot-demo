@@ -1,7 +1,11 @@
 package com.spittr.redis;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.spittr.utils.constant.JedisResourceConstant;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -15,34 +19,35 @@ import redis.clients.jedis.JedisPool;
 public abstract class AbstractRedisClient {
 
 	private static final Logger LOG = Logger.getLogger(AbstractRedisClient.class);
-	
+
 	@Autowired
-	private JedisPool jedisPool;
-	
+	private Map<String, JedisPool> jedisPoolMap;
+
 	/**
 	 * 获取redis连接
 	 * 
 	 * @return Jedis连接
 	 */
-	public Jedis getJedisIntance() {
+	protected Jedis getJedisIntance(String resourceName) {
 		try {
-			return jedisPool.getResource();
+			return jedisPoolMap.get(JedisResourceConstant.JEDISPOOL_PREFIX + "_" + resourceName).getResource();
 		} catch (Exception e) {
 			LOG.error("error to get JedisPool", e);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * 关闭redis连接
 	 * 
-	 * @param jedis redis连接
+	 * @param jedis
+	 *            redis连接
 	 */
-	public void closeJedis(Jedis jedis) {
+	protected void closeJedis(Jedis jedis) {
 		if (jedis != null) {
 			jedis.close();
 		}
 	}
-	
+
 }

@@ -6,16 +6,26 @@ import java.util.Date;
 /**
  * spittr用户实体对象
  * 
- * @property userId 用户ID
- * @property nickname 用户昵称
- * @property password 用户登录密码
- * @property gender 性别，0-男，1-女，2-中
- * @property location 所在地，目前用太阳系行星，默认地球
- * @property profile 个人简介
- * @property phoneNum 手机号
- * @property birthDay 生日
- * @property registeredTime 注册时间
- * @property age 年龄
+ * @param userId
+ *            用户ID
+ * @param nickname
+ *            用户昵称
+ * @param password
+ *            用户登录密码
+ * @param gender
+ *            性别，0-男，1-女，2-中
+ * @param location
+ *            所在地，目前用太阳系行星，默认地球
+ * @param profile
+ *            个人简介
+ * @param phoneNum
+ *            手机号
+ * @param birthDay
+ *            生日
+ * @param registeredTime
+ *            注册时间
+ * @param age
+ *            年龄
  * 
  * @author chufei
  * @date 2017年4月10日

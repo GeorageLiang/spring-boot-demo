@@ -1,5 +1,7 @@
 package com.spittr.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +25,7 @@ import com.spittr.utils.convert.UserConvert;
  */
 @RestController
 @RequestMapping(value = "/u")
-public class UserController {
+public class UserController extends AbstractApiController {
 
 	private static Logger LOG = Logger.getLogger(UserController.class);
 
@@ -32,7 +34,7 @@ public class UserController {
 
 	@RequestMapping("/info/{userId}")
 	@ResponseBody
-	public String getUserInfo(@PathVariable(value = "userId") long userId) {
+	public String getUserInfo(HttpServletRequest request, @PathVariable(value = "userId") long userId) {
 		JsonObject result = new JsonObject();
 
 		try {
@@ -54,7 +56,6 @@ public class UserController {
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
 			result.addProperty("code", e.getErrorCode());
-			return result.toString();
 		}
 
 		return result.toString();

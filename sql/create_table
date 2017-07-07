@@ -1,4 +1,4 @@
-# 创建用户信息表
+# 用户信息表
 DROP TABLE IF EXISTS `spittr`.`user_info`;
 CREATE TABLE `spittr`.`user_info` (
   `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
@@ -11,7 +11,50 @@ CREATE TABLE `spittr`.`user_info` (
   `registered_time` datetime NOT NULL COMMENT '注册时间',
   `phone_num` varchar(20) NOT NULL DEFAULT '' COMMENT '手机号',
   `age` int(11) NOT NULL DEFAULT '0' COMMENT '年龄',
+  `registered_platform` int(11) NOT NULL DEFAULT '-1' COMMENT '用户注册平台，-1-未知，1-pc，2-Android，3-ios，4-winphone',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `unique_nickname` (`nickname`),
   UNIQUE KEY `unique_phone` (`phone_num`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+
+# 用户登录记录表
+DROP TABLE IF EXISTS `spittr`.`login_info`;
+CREATE TABLE `login_info` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '登录用户id',
+  `ip` varchar(50) NOT NULL DEFAULT '' COMMENT '登录ip',
+  `token` varchar(100) NOT NULL DEFAULT '' COMMENT '登录token',
+  `platform` int(11) NOT NULL DEFAULT '-1' COMMENT '登录平台，-1-未知，1-pc，2-Android，3-ios，4-winphone''',
+  `login_time` datetime NOT NULL COMMENT '登录时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户登录记录';
+
+# 动态内容表
+DROP TABLE IF EXISTS `spittr`.`moments`;
+CREATE TABLE `moments` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '动态id，自增主键',
+  `user_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '动态发布人的id',
+  `content` varchar(1000) NOT NULL DEFAULT '' COMMENT '动态文本内容',
+  `reply_count` int(11) NOT NULL DEFAULT '0' COMMENT '动态回复数',
+  `is_display` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否对外显示,0-不显示,1-显示',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除,0-不删除,1-删除',
+  `memo` varchar(200) NOT NULL DEFAULT '' COMMENT '备注信息',
+  `created_time` datetime NOT NULL COMMENT '创建时间',
+  `updated_time` datetime NOT NULL COMMENT '最后操作时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='动态内容表';
+
+# 动态附加信息表
+DROP TABLE IF EXISTS `spittr`.`moments_additional`;
+CREATE TABLE `moments_additional` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '动态附加信息主键id',
+  `moment_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '附加信息对应的动态id',
+  `user_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '附加信息发布人的id',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型，1-图片，2-视频，3-音频',
+  `index` int(2) NOT NULL DEFAULT '1' COMMENT '排序索引，从1开始递增',
+  `url` varchar(500) NOT NULL DEFAULT '' COMMENT '附加资源地址',
+  `created_time` datetime NOT NULL COMMENT '创建时间',
+  `updated_time` datetime NOT NULL COMMENT '最后操作时间',
+  PRIMARY KEY (`id`),
+  KEY `Index_momentId` (`moment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='动态附加信息表';
