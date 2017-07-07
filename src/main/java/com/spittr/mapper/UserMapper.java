@@ -51,24 +51,24 @@ public interface UserMapper {
 	public Long loginByPhone(Map<String, Object> param);
 
 	/**
-	 * 根据昵称获取用户数
+	 * 判断昵称是否已存在
 	 * 
 	 * @param nickname
 	 *            昵称
-	 * @return 返回用户数量
+	 * @return 返回1表示已存在，null表示不存在
 	 */
-	@Select(value = "select count(1) from `user_info` where `nickname` = #{nickname}")
-	public int getUserCountByNickname(String nickname);
+	@Select(value = "select 1 from `user_info` where `nickname` = #{nickname}")
+	public Integer getUserCountByNickname(String nickname);
 
 	/**
-	 * 根据手机号获取用户数
+	 * 判断手机号是否已存在
 	 * 
 	 * @param phoneNum
 	 *            手机号
-	 * @return 返回用户数量
+	 * @return 返回1表示已存在，null表示不存在
 	 */
-	@Select(value = "select count(1) from `user_info` where `phone_num` = #{phoneNum}")
-	public int getUserCountByPhoneNum(String phoneNum);
+	@Select(value = "select 1 from `user_info` where `phone_num` = #{phoneNum}")
+	public Integer getUserCountByPhoneNum(String phoneNum);
 
 	/**
 	 * 根据用户id获取用户信息

@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean isExistNickname(String nickname) {
 		try {
-			return userMapper.getUserCountByNickname(nickname) > 0;
+			return userMapper.getUserCountByNickname(nickname) != null;
 		} catch (Exception e) {
 			LOG.error("error execute userMapper.getUserCountByNickname, nickname: " + nickname, e);
 			throw new SpittrException("error execute userMapper.getUserCountByNickname", e,
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean isExistPhone(String phoneNum) {
 		try {
-			return userMapper.getUserCountByPhoneNum(phoneNum) > 0;
+			return userMapper.getUserCountByPhoneNum(phoneNum) != null;
 		} catch (Exception e) {
 			LOG.error("error execute userMapper.getUserCountByPhoneNum, phoneNum: " + phoneNum, e);
 			throw new SpittrException("error execute userMapper.getUserCountByPhoneNum", e,
