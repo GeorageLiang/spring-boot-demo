@@ -19,7 +19,7 @@ CREATE TABLE `spittr`.`user_info` (
 
 # 用户登录记录表
 DROP TABLE IF EXISTS `spittr`.`login_info`;
-CREATE TABLE `login_info` (
+CREATE TABLE `spittr`.`login_info` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '登录用户id',
   `ip` varchar(50) NOT NULL DEFAULT '' COMMENT '登录ip',
@@ -31,7 +31,7 @@ CREATE TABLE `login_info` (
 
 # 动态内容表
 DROP TABLE IF EXISTS `spittr`.`moments`;
-CREATE TABLE `moments` (
+CREATE TABLE `spittr`.`moments` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '动态id，自增主键',
   `user_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '动态发布人的id',
   `content` varchar(1000) NOT NULL DEFAULT '' COMMENT '动态文本内容',
@@ -46,7 +46,7 @@ CREATE TABLE `moments` (
 
 # 动态附加信息表
 DROP TABLE IF EXISTS `spittr`.`moments_additional`;
-CREATE TABLE `moments_additional` (
+CREATE TABLE `spittr`.`moments_additional` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '动态附加信息主键id',
   `moment_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '附加信息对应的动态id',
   `user_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '附加信息发布人的id',
