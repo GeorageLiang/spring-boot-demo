@@ -98,7 +98,7 @@ public class IndexController extends AbstractApiController {
 			// 注册用户信息
 			long userId = userService.register(nickname, password, gender, location, profile, phoneNum, birthDay,
 					platform);
-			if (userId < 0) {
+			if (userId < 1) {
 				result.addProperty("code", CodeConstant.FAIL_REGISTER);
 				result.addProperty("message", "registered failed!");
 				return result.toString();
@@ -153,7 +153,7 @@ public class IndexController extends AbstractApiController {
 
 			String ip = getRemoteIp(request);
 			int platform = getPlatform(userAgent);
-			userService.loginLog(userId, token, ip, platform);
+			userService.loginLog(user.getUserId(), token, ip, platform);
 
 			result.addProperty("userId", user.getUserId());
 			result.add("userInfo", UserConvert.user2Json(user));

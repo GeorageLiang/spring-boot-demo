@@ -120,7 +120,7 @@ public class MomentController extends AbstractApiController {
 
 	@RequestMapping(value = "/display", method = RequestMethod.POST)
 	@ResponseBody
-	public String publishMoment(HttpServletRequest request, @RequestParam("token") String token,
+	public String displayMoment(HttpServletRequest request, @RequestParam("token") String token,
 			@RequestParam(value = "momentId", required = false) long momentId) {
 		// TODO 校验用户token
 		JsonObject result = new JsonObject();

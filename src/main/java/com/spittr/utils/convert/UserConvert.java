@@ -22,6 +22,9 @@ public class UserConvert {
 	 */
 	public static User map2User(Map<String, String> map) {
 		User user = new User();
+		if (map.get("userId") != null) {
+			user.setUserId(Long.parseLong(map.get("userId")));
+		}
 		if (map.get("nickname") != null) {
 			user.setNickname(map.get("nickname"));
 		}
@@ -62,6 +65,7 @@ public class UserConvert {
 	public static JsonObject user2Json(User user) {
 		JsonObject jsonObject = new JsonObject();
 		if (user != null) {
+			jsonObject.addProperty("userId", user.getUserId());
 			if (user.getNickname() != null) {
 				jsonObject.addProperty("nickname", user.getNickname());
 			}
