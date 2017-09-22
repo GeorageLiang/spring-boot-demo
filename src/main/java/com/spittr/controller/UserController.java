@@ -51,8 +51,12 @@ public class UserController extends AbstractApiController {
 
 		try {
 			User user = userService.getUserInfoById(userId);
-			result.add("userInfo", UserConvert.user2Json(user));
-			result.addProperty("code", CodeConstant.SUCCESS);
+			if (user != null) {
+				result.add("userInfo", UserConvert.user2Json(user));
+				result.addProperty("code", CodeConstant.SUCCESS);
+			} else {
+				result.addProperty("code", CodeConstant.ERR_USER_NOT_EXIST);
+			}
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
 			result.addProperty("code", e.getErrorCode());
