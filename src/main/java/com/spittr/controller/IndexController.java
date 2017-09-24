@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
+import com.spittr.exception.SpittrException;
 import com.spittr.model.User;
 import com.spittr.service.UserService;
 import com.spittr.utils.ParamUtil;
-import com.spittr.utils.SpittrException;
 import com.spittr.utils.constant.CodeConstant;
 import com.spittr.utils.constant.UserConstant;
 import com.spittr.utils.convert.UserConvert;

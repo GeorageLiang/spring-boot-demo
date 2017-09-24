@@ -10,13 +10,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spittr.exception.SpittrException;
 import com.spittr.mapper.MomentAdditionalMapper;
 import com.spittr.mapper.MomentMapper;
 import com.spittr.model.Moment;
 import com.spittr.model.MomentAdditional;
 import com.spittr.redis.MomentRedisClient;
 import com.spittr.service.MomentService;
-import com.spittr.utils.SpittrException;
 import com.spittr.utils.constant.CodeConstant;
 import com.spittr.utils.convert.MomentConvert;
 

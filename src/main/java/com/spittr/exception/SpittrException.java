@@ -1,4 +1,4 @@
-package com.spittr.utils;
+package com.spittr.exception;
 
 /**
  * Spittr自定义异常类

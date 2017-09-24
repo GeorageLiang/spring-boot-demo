@@ -8,13 +8,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spittr.exception.SpittrException;
 import com.spittr.mapper.LoginInfoMapper;
 import com.spittr.mapper.UserMapper;
 import com.spittr.model.User;
 import com.spittr.redis.UserRedisClient;
 import com.spittr.service.UserService;
 import com.spittr.utils.LogUtil;
-import com.spittr.utils.SpittrException;
 import com.spittr.utils.constant.CodeConstant;
 import com.spittr.utils.convert.UserConvert;
 import com.theft.code.utils.date.DateCalculateUtil;
