@@ -11,7 +11,7 @@
 
 
 <h4>数据库</h4>
-<p>可修改jdbc.properties配置本地数据库，如果新建或修改库或者表，请将对应的SQL上传至sql目录下</p>
+<p>可修改application.properties配置本地数据库，如果新建或修改库或者表，请将对应的SQL上传至sql目录下</p>
 
 
 <h4>本地启动(默认localhost:8080)</h4>
@@ -23,16 +23,12 @@
 
 
 <h4>多环境配置文件</h4>
-<p>properties目录下建立不同开发环境目录，例如dev（本地开发），product（线上生产）</p>
+<p>resources目录下建立不同开发环境目录，例如dev（本地开发），product（线上生产），在对应环境下创建配置文件application.properties</p>
 <p>使用maven命令打包不同环境，例如打包生产环境：mvn package -Pproduct</p>
 
 
 <h4>properties文件</h4>
-<ul>
-<li>jdbc.properties：数据库配置文件，请根据本地配置修改</li>
-<li>redis.properties：redis配置文件，请根据本地配置修改</li>
-<li>application.properties：spring-boot通用配置文件，请根据本地配置修改</li>
-</ul>
+<p>application.properties：spring-boot通用配置文件，可配置服务端口，jdbc连接，redis连接等</p>
 
 
 <h4>jar文件</h4>

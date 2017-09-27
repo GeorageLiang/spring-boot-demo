@@ -14,11 +14,6 @@ public class CodeConstant {
 	public static final String SUCCESS = "0000";
 
 	/**
-	 * 请求异常
-	 */
-	public static final String EXCEPTION_REQUEST = "0006";
-	
-	/**
 	 * 获取参数异常
 	 */
 	public static final String EXCEPTION_GET_PARAM = "0001";
