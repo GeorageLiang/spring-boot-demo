@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
+import com.spittr.config.jedis.MomentJedisConfig;
 import com.spittr.model.MomentAdditional;
-import com.spittr.utils.constant.JedisResourceConstant;
 import com.theft.code.utils.string.StringUtil;
 
 import redis.clients.jedis.Jedis;
@@ -28,6 +28,10 @@ public class MomentRedisClient extends AbstractRedisClient {
 
 	private static final String MOMENT_KEY = "moment_%s";
 
+	private Jedis getJedisIntance() {
+		return getJedisIntanceByResourceName(MomentJedisConfig.RESOURCE_NAME);
+	}
+	
 	/**
 	 * 保存动态信息到redis
 	 * 
@@ -56,7 +60,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 			String memo, List<MomentAdditional> momentAdditionals, Date createdTime, Date updatedTime) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.MOMENTS_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
 			Map<String, String> hash = new HashMap<String, String>();
 			hash.put("momentId", String.valueOf(momentId));
@@ -94,7 +98,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 		Jedis jedis = null;
 		Map<String, String> moment = new HashMap<String, String>();
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.MOMENTS_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
 			moment = jedis.hgetAll(key);
 		} catch (Exception e) {
@@ -118,7 +122,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 	public String getMomentFieldByMomentId(long momentId, String field) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.MOMENTS_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
 			return jedis.hget(key, field);
 		} catch (Exception e) {
@@ -142,7 +146,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 	public void setMomentField(long momentId, String field, String value) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.MOMENTS_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
 			jedis.hset(key, field, value);
 		} catch (Exception e) {

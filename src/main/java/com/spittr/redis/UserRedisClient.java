@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import com.spittr.utils.constant.JedisResourceConstant;
+import com.spittr.config.jedis.UserJedisConfig;
 
 import redis.clients.jedis.Jedis;
 
@@ -23,6 +23,10 @@ public class UserRedisClient extends AbstractRedisClient {
 
 	private static final String USER_INFO_KEY = "user_info_%s";
 
+	private Jedis getJedisIntance() {
+		return getJedisIntanceByResourceName(UserJedisConfig.RESOURCE_NAME);
+	}
+	
 	/**
 	 * 保存用户信息缓存
 	 * 
@@ -47,7 +51,7 @@ public class UserRedisClient extends AbstractRedisClient {
 			int age, String birthDay) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.USER_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(USER_INFO_KEY, userId);
 			Map<String, String> hash = new HashMap<String, String>();
 			hash.put("userId", String.valueOf(userId));
@@ -92,7 +96,7 @@ public class UserRedisClient extends AbstractRedisClient {
 			String phoneNum, int age, String birthDay) {
 		Jedis jedis = null;
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.USER_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(USER_INFO_KEY, userId);
 			Map<String, String> hash = jedis.hgetAll(key);
 			if (hash != null) {
@@ -127,7 +131,7 @@ public class UserRedisClient extends AbstractRedisClient {
 		Jedis jedis = null;
 		Map<String, String> userInfo = new HashMap<String, String>();
 		try {
-			jedis = getJedisIntance(JedisResourceConstant.USER_RESOURCE);
+			jedis = getJedisIntance();
 			String key = String.format(USER_INFO_KEY, userId);
 			userInfo = jedis.hgetAll(key);
 		} catch (Exception e) {

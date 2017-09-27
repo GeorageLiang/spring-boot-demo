@@ -1,4 +1,4 @@
-package com.spittr.config;
+package com.spittr.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -12,7 +12,7 @@ import com.spittr.interceptor.ControllerAccessInterceptor;
  * @date 2017年9月24日
  */
 @Configuration
-public class WebConfiguration extends WebMvcConfigurerAdapter {
+public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spittr.exception.SpittrException;
-import com.spittr.mapper.LoginInfoMapper;
-import com.spittr.mapper.UserMapper;
+import com.spittr.mapper.spittr.master.LoginInfoMapper;
+import com.spittr.mapper.spittr.master.UserMapper;
 import com.spittr.model.User;
 import com.spittr.redis.UserRedisClient;
 import com.spittr.service.UserService;

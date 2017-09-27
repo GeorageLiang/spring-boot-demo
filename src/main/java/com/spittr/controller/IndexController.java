@@ -44,8 +44,7 @@ public class IndexController extends AbstractApiController {
 	@RequestMapping("/home")
 	@ResponseBody
 	public String home() {
-		JsonObject result = new JsonObject();
-		return result.toString();
+		return "Spittr Home!";
 	}
 
 	/**

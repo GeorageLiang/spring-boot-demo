@@ -1,4 +1,4 @@
-package com.spittr.mapper;
+package com.spittr.mapper.spittr.master;
 
 import java.util.List;
 import java.util.Map;

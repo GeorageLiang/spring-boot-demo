@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spittr.exception.SpittrException;
-import com.spittr.mapper.MomentAdditionalMapper;
-import com.spittr.mapper.MomentMapper;
+import com.spittr.mapper.spittr.master.MomentAdditionalMapper;
+import com.spittr.mapper.spittr.master.MomentMapper;
 import com.spittr.model.Moment;
 import com.spittr.model.MomentAdditional;
 import com.spittr.redis.MomentRedisClient;
