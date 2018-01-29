@@ -1,4 +1,4 @@
-package com.spittr.mapper.spittr.master;
+package com.spittr.mapper.master;
 
 import java.util.Map;
 
@@ -22,16 +22,12 @@ public interface MomentMapper {
 	/**
 	 * 添加动态
 	 * 
-	 * @param userId
-	 *            发布人id
-	 * @param content
-	 *            发布文本内容
-	 * @param is_display
-	 *            是否对外显示,0-不显示,1-显示
-	 * @param createdTime
-	 *            发布时间
-	 * @param updatedTime
-	 *            最后操作时间
+	 * @param params 入参集合，具体如下
+	 * <p>userId: 发布人id</p>
+	 * <p>content: 发布文本内容</p>
+	 * <p>is_display: 是否对外显示,0-不显示,1-显示</p>
+	 * <p>createdTime: 发布时间</p>
+	 * <p>updatedTime: 最后操作时间</p>
 	 * @return 返回动态id
 	 */
 	@Insert(value = "insert into `moments` (`user_id`, `content`, `is_display`, `created_time`, `updated_time`) "
@@ -42,7 +38,10 @@ public interface MomentMapper {
 	/**
 	 * 设置动态对外显示状态
 	 * 
-	 * @param params
+	 * @param params 入参集合，具体如下
+	 * <p>isDisplay: 设置是否对外显示，0-不显示，1-显示</p>
+	 * <p>updatedTime: 最后操作时间</p>
+	 * <p>id: 动态id</p>
 	 * @return 返回操作行数
 	 */
 	@Update(value = "update `moments` set `is_display` = #{isDisplay}, `updated_time` = #{updatedTime} where `id` = #{id}")

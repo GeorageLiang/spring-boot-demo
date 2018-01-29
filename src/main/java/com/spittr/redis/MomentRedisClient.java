@@ -10,7 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
 import com.spittr.config.jedis.MomentJedisConfig;
+import com.spittr.model.Moment;
 import com.spittr.model.MomentAdditional;
+import com.spittr.utils.ConverUtil;
+import com.spittr.utils.serializer.GsonSerializerHelper;
+import com.spittr.utils.serializer.MomentAdditionalSerializer;
 import com.theft.code.utils.string.StringUtil;
 
 import redis.clients.jedis.Jedis;
@@ -62,8 +66,8 @@ public class MomentRedisClient extends AbstractRedisClient {
 		try {
 			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
-			Map<String, String> hash = new HashMap<String, String>();
-			hash.put("momentId", String.valueOf(momentId));
+			Map<String, String> hash = new HashMap<String, String>(16);
+			hash.put("id", String.valueOf(momentId));
 			hash.put("userId", String.valueOf(userId));
 			hash.put("content", content);
 			hash.put("replyCount", String.valueOf(replyCount));
@@ -73,7 +77,8 @@ public class MomentRedisClient extends AbstractRedisClient {
 				hash.put("memo", memo);
 			}
 			if (!momentAdditionals.isEmpty()) {
-				hash.put("momentAdditionals", new Gson().toJson(momentAdditionals));
+				Gson gson = GsonSerializerHelper.addSerializer(MomentAdditional.class, new MomentAdditionalSerializer());
+				hash.put("momentAdditionals", gson.toJson(momentAdditionals));
 			}
 			hash.put("createdTime", String.valueOf(createdTime.getTime()));
 			hash.put("updatedTime", String.valueOf(updatedTime.getTime()));
@@ -94,20 +99,21 @@ public class MomentRedisClient extends AbstractRedisClient {
 	 *            动态id
 	 * @return 返回动态信息hash
 	 */
-	public Map<String, String> getMomentByMomentId(long momentId) {
+	public Moment getMomentByMomentId(long momentId) {
 		Jedis jedis = null;
-		Map<String, String> moment = new HashMap<String, String>();
+		Map<String, String> moment = new HashMap<String, String>(16);
 		try {
 			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
 			moment = jedis.hgetAll(key);
+			return ConverUtil.map2Object(moment, Moment.class);
 		} catch (Exception e) {
 			LOG.error("error get moment_" + momentId, e);
 		} finally {
 			closeJedis(jedis);
 		}
 
-		return moment;
+		return null;
 	}
 
 	/**

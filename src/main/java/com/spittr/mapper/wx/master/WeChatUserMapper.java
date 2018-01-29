@@ -1,4 +1,4 @@
-package com.spittr.mapper.spittr_wx.master;
+package com.spittr.mapper.wx.master;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -15,9 +15,9 @@ public interface WeChatUserMapper {
 	/**
 	 * 根据用户id登录
 	 * 
-	 * @param param
-	 *            参数集合
-	 * @return 返回用户id
+	 * @param id
+	 *            用户id
+	 * @return 用户名
 	 */
 	@Select(value = "select `name` from `wx_user_info` where `id` = #{id}")
 	public String getWeChatUserNameByUserId(int id);

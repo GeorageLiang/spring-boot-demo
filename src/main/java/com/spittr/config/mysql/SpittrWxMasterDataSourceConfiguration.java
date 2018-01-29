@@ -21,22 +21,22 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @date 2017年9月25日
  */
 @Configuration
-@MapperScan(basePackages = "com.spittr.mapper.spittr_wx.master", sqlSessionFactoryRef = "spittrWXMasterSqlSessionFactory")
-public class SpittrWXMasterDataSourceConfiguration {
+@MapperScan(basePackages = "com.spittr.mapper.wx.master", sqlSessionFactoryRef = "spittrWxMasterSqlSessionFactory")
+public class SpittrWxMasterDataSourceConfiguration {
 
-	@Bean(name = "spittrWXMasterDataSource")
-	@Qualifier("spittrWXMasterDataSource")
-	@ConfigurationProperties(prefix = "c3p0.mysql.spittr_wx.master")
+	@Bean(name = "spittrWxMasterDataSource")
+	@Qualifier("spittrWxMasterDataSource")
+	@ConfigurationProperties(prefix = "c3p0.mysql.spittr.wx.master")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().type(ComboPooledDataSource.class).build();
 	}
 
-	@Bean(name = "spittrWXMasterTransactionManager")
+	@Bean(name = "spittrWxMasterTransactionManager")
 	public DataSourceTransactionManager transactionManager() {
 		return new DataSourceTransactionManager(dataSource());
 	}
 
-	@Bean(name = "spittrWXMasterSqlSessionFactory")
+	@Bean(name = "spittrWxMasterSqlSessionFactory")
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());

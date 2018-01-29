@@ -1,4 +1,4 @@
-package com.spittr.utils.constant;
+package com.spittr.constant;
 
 /**
  * 用户相关常量类

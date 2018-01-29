@@ -12,13 +12,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
+import com.spittr.constant.CodeConstant;
 import com.spittr.exception.SpittrException;
 import com.spittr.model.Moment;
 import com.spittr.service.MomentService;
 import com.spittr.utils.ParamUtil;
-import com.spittr.utils.constant.CodeConstant;
-import com.spittr.utils.convert.MomentConvert;
 
+/**
+ * 动态相关控制器
+ * @author chufei
+ * 2018年1月17日
+ */
 @RestController
 @RequestMapping(value = "/moment")
 public class MomentController extends AbstractApiController {
@@ -30,7 +34,7 @@ public class MomentController extends AbstractApiController {
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST)
 	@ResponseBody
-	public String publishMoment(HttpServletRequest request, @RequestParam("token") String token,
+	public Response<Moment> publishMoment(HttpServletRequest request, @RequestParam("token") String token,
 			@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
 			@RequestParam(value = "content", required = false) String content,
 			@RequestParam(value = "isDisplay", required = false, defaultValue = "0") int isDisplay,
@@ -38,7 +42,7 @@ public class MomentController extends AbstractApiController {
 			@RequestParam(value = "addIndexs", required = false) int[] addIndexs,
 			@RequestParam(value = "addUrls", required = false) String[] addUrls) {
 		// TODO 校验token
-		JsonObject result = new JsonObject();
+		Response<Moment> response = new Response<>();
 
 		try {
 			userId = ParamUtil.toLong("userId", userId, true, 0, CodeConstant.ERR_USERID_MISS, 1, Long.MAX_VALUE);
@@ -49,12 +53,12 @@ public class MomentController extends AbstractApiController {
 			addUrls = ParamUtil.toStringArray("addUrls", addUrls, false, new String[0], null, 0, 100);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
-			result.addProperty("code", e.getErrorCode());
-			return result.toString();
+			response.setCode(e.getErrorCode());
+			return response;
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
-			result.addProperty("code", CodeConstant.EXCEPTION_GET_PARAM);
-			return result.toString();
+			response.setCode(CodeConstant.EXCEPTION_GET_PARAM);
+			return response;
 		}
 
 		// 如果需要上传附加信息
@@ -62,60 +66,60 @@ public class MomentController extends AbstractApiController {
 			int indexLength = addIndexs.length;
 			if (indexLength < 1) {
 				// 附加信息数量不能少于1
-				result.addProperty("code", "2002");
-				return result.toString();
+				response.setCode("2002");
+				return response;
 			}
 			if (indexLength != addUrls.length) {
 				// 附加信息数量无法对应
-				result.addProperty("code", "2003");
-				return result.toString();
+				response.setCode("2003");
+				return response;
 			}
 		}
 
 		try {
 			long momentId = momentService.addMoment(userId, content, isDisplay, addType, addIndexs, addUrls);
 			if (momentId > 0) {
-				result.addProperty("momentId", momentId);
-				result.addProperty("code", CodeConstant.SUCCESS);
+				response.setData(momentService.getMomentByMomentId(momentId));
+				response.setCode(CodeConstant.SUCCESS);
 			} else {
 				// 动态发布失败
-				result.addProperty("code", "2004");
+				response.setCode("2004");
 			}
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage(), e);
-			result.addProperty("code", e.getErrorCode());
+			response.setCode(e.getErrorCode());
 		}
 
-		return result.toString();
+		return response;
 	}
 
 	@RequestMapping(value = "/{momentId}", method = RequestMethod.GET)
 	@ResponseBody
-	public String getMoment(HttpServletRequest request, @PathVariable(value = "momentId") long momentId) {
-		JsonObject result = new JsonObject();
+	public Response<Moment> getMoment(HttpServletRequest request, @PathVariable(value = "momentId") long momentId) {
+		Response<Moment> response = new Response<>();
 
 		try {
-			momentId = ParamUtil.toLong("momentId", momentId, true, 0l, "2004", 1, Long.MAX_VALUE);
+			momentId = ParamUtil.toLong("momentId", momentId, true, 0L, "2004", 1, Long.MAX_VALUE);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
-			result.addProperty("code", e.getErrorCode());
-			return result.toString();
+			response.setCode(e.getErrorCode());
+			return response;
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
-			result.addProperty("code", CodeConstant.EXCEPTION_GET_PARAM);
-			return result.toString();
+			response.setCode(CodeConstant.EXCEPTION_GET_PARAM);
+			return response;
 		}
 
 		try {
 			Moment moment = momentService.getMomentByMomentId(momentId);
-			result.add("moment", MomentConvert.moment2Json(moment));
-			result.addProperty("code", CodeConstant.SUCCESS);
+			response.setData(moment);
+			response.setCode(CodeConstant.SUCCESS);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage(), e);
-			result.addProperty("code", e.getErrorCode());
+			response.setCode(e.getErrorCode());
 		}
 
-		return result.toString();
+		return response;
 	}
 
 	@RequestMapping(value = "/display", method = RequestMethod.POST)
@@ -126,7 +130,7 @@ public class MomentController extends AbstractApiController {
 		JsonObject result = new JsonObject();
 
 		try {
-			momentId = ParamUtil.toLong("momentId", momentId, true, 0l, "2004", 1, Long.MAX_VALUE);
+			momentId = ParamUtil.toLong("momentId", momentId, true, 0L, "2004", 1, Long.MAX_VALUE);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
 			result.addProperty("code", e.getErrorCode());

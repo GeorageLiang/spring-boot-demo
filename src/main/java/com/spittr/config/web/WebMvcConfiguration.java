@@ -12,7 +12,7 @@ import com.spittr.interceptor.ControllerAccessInterceptor;
  * @date 2017年9月24日
  */
 @Configuration
-public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
+public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

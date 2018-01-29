@@ -2,7 +2,8 @@ package com.spittr.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.spittr.utils.constant.PlatformConstant;
+import com.spittr.constant.CommonConstant;
+import com.spittr.constant.PlatformConstant;
 import com.theft.code.utils.string.StringUtil;
 
 /**
@@ -22,24 +23,24 @@ public abstract class AbstractApiController {
 	 */
 	protected String getRemoteIp(HttpServletRequest request) {
 		String ipAddress = request.getHeader("X-Real-IP");
-		if (ipAddress == null || ipAddress.length() == 0 || "null".equalsIgnoreCase(ipAddress)
-				|| "unknown".equalsIgnoreCase(ipAddress)) {
+		if (ipAddress == null || ipAddress.length() == 0 || CommonConstant.NULL_VALUE.equalsIgnoreCase(ipAddress)
+				|| CommonConstant.UNKNOWN_VALUE.equalsIgnoreCase(ipAddress)) {
 			ipAddress = request.getHeader("X-Cluster-Client-Ip");
 		}
-		if (ipAddress == null || ipAddress.length() == 0 || "null".equalsIgnoreCase(ipAddress)
-				|| "unknown".equalsIgnoreCase(ipAddress)) {
+		if (ipAddress == null || ipAddress.length() == 0 || CommonConstant.NULL_VALUE.equalsIgnoreCase(ipAddress)
+				|| CommonConstant.UNKNOWN_VALUE.equalsIgnoreCase(ipAddress)) {
 			ipAddress = request.getHeader("X-Forwarded-For");
 		}
-		if (ipAddress == null || ipAddress.length() == 0 || "null".equalsIgnoreCase(ipAddress)
-				|| "unknown".equalsIgnoreCase(ipAddress)) {
+		if (ipAddress == null || ipAddress.length() == 0 || CommonConstant.NULL_VALUE.equalsIgnoreCase(ipAddress)
+				|| CommonConstant.UNKNOWN_VALUE.equalsIgnoreCase(ipAddress)) {
 			ipAddress = request.getHeader("Proxy-Client-IP");
 		}
-		if (ipAddress == null || ipAddress.length() == 0 || "null".equalsIgnoreCase(ipAddress)
-				|| "unknown".equalsIgnoreCase(ipAddress)) {
+		if (ipAddress == null || ipAddress.length() == 0 || CommonConstant.NULL_VALUE.equalsIgnoreCase(ipAddress)
+				|| CommonConstant.UNKNOWN_VALUE.equalsIgnoreCase(ipAddress)) {
 			ipAddress = request.getHeader("WL-Proxy-Client-IP");
 		}
-		if (ipAddress == null || ipAddress.length() == 0 || "null".equalsIgnoreCase(ipAddress)
-				|| "unknown".equalsIgnoreCase(ipAddress)) {
+		if (ipAddress == null || ipAddress.length() == 0 || CommonConstant.NULL_VALUE.equalsIgnoreCase(ipAddress)
+				|| CommonConstant.UNKNOWN_VALUE.equalsIgnoreCase(ipAddress)) {
 			ipAddress = request.getRemoteAddr();
 		}
 
@@ -65,11 +66,11 @@ public abstract class AbstractApiController {
 		if (StringUtil.strIsNull(userAgent)) {
 			return PlatformConstant.PLATFORM_UNKNOWN;
 		}
-		if (userAgent.contains("iPhone") || userAgent.contains("iPod") || userAgent.contains("iPad")) {
+		if (userAgent.contains(CommonConstant.USER_AGENT_IPHONE) || userAgent.contains(CommonConstant.USER_AGENT_IPOD) || userAgent.contains(CommonConstant.USER_AGENT_IPAD)) {
 			return PlatformConstant.PLATFORM_IOS;
-		} else if (userAgent.contains("Android")) {
+		} else if (userAgent.contains(CommonConstant.USER_AGENT_ANDROID)) {
 			return PlatformConstant.PLATFORM_ANDROID;
-		} else if (userAgent.contains("Windows Phone")) {
+		} else if (userAgent.contains(CommonConstant.USER_AGENT_WINDOWS_PHONE)) {
 			return PlatformConstant.PLATFORM_WINPHONE;
 		} else {
 			return PlatformConstant.PLATFORM_UNKNOWN;

@@ -10,16 +10,20 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spittr.constant.CodeConstant;
 import com.spittr.exception.SpittrException;
-import com.spittr.mapper.spittr.master.MomentAdditionalMapper;
-import com.spittr.mapper.spittr.master.MomentMapper;
+import com.spittr.mapper.master.MomentAdditionalMapper;
+import com.spittr.mapper.master.MomentMapper;
 import com.spittr.model.Moment;
 import com.spittr.model.MomentAdditional;
 import com.spittr.redis.MomentRedisClient;
 import com.spittr.service.MomentService;
-import com.spittr.utils.constant.CodeConstant;
-import com.spittr.utils.convert.MomentConvert;
 
+/**
+ * 用户动态相关业务service实现
+ * @author chufei
+ * 2018年1月17日
+ */
 @Service
 public class MomentServiceImpl implements MomentService {
 
@@ -38,7 +42,7 @@ public class MomentServiceImpl implements MomentService {
 	public long addMoment(long userId, String content, int isDisplay, int additionalType, int[] additionalIndex,
 			String[] additionalUrl) {
 		Date now = new Date();
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<String, Object>(16);
 		params.put("userId", userId);
 		params.put("content", content);
 		params.put("isDisplay", isDisplay);
@@ -86,7 +90,7 @@ public class MomentServiceImpl implements MomentService {
 		int display = moment.getIsDisplay() == 0 ? 1 : 0;
 
 		try {
-			Map<String, Object> params = new HashMap<String, Object>();
+			Map<String, Object> params = new HashMap<String, Object>(16);
 			params.put("id", momentId);
 			params.put("isDisplay", display);
 			params.put("updatedTime", new Date());
@@ -107,10 +111,10 @@ public class MomentServiceImpl implements MomentService {
 	@Override
 	public Moment getMomentByMomentId(long momentId) {
 		try {
-			Map<String, String> momentHash = momentRedisClient.getMomentByMomentId(momentId);
+			Moment moment = momentRedisClient.getMomentByMomentId(momentId);
 			// 如果redis没有缓存数据
-			if (momentHash.isEmpty()) {
-				Moment moment = momentMapper.getMomentById(momentId);
+			if (moment == null) {
+				moment = momentMapper.getMomentById(momentId);
 				if (moment != null) {
 					// 根据动态id获取附加信息
 					List<MomentAdditional> additionals = momentAdditionalMapper.getAdditionalByMomentId(momentId);
@@ -127,7 +131,7 @@ public class MomentServiceImpl implements MomentService {
 				return null;
 			}
 
-			return MomentConvert.map2Moment(momentHash);
+			return moment;
 		} catch (Exception e) {
 			LOG.error("error execute momentMapper.getMomentById, momentId: " + momentId, e);
 			throw new SpittrException("error execute momentMapper.getMomentById", e, CodeConstant.EXCEPTION_SERVICE);

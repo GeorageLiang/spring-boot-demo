@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.spittr.config.jedis.UserJedisConfig;
+import com.spittr.model.User;
+import com.spittr.utils.ConverUtil;
 
 import redis.clients.jedis.Jedis;
 
@@ -53,7 +55,7 @@ public class UserRedisClient extends AbstractRedisClient {
 		try {
 			jedis = getJedisIntance();
 			String key = String.format(USER_INFO_KEY, userId);
-			Map<String, String> hash = new HashMap<String, String>();
+			Map<String, String> hash = new HashMap<String, String>(16);
 			hash.put("userId", String.valueOf(userId));
 			hash.put("nickname", nickname);
 			hash.put("gender", String.valueOf(gender));
@@ -127,20 +129,21 @@ public class UserRedisClient extends AbstractRedisClient {
 	 *            用户id
 	 * @return 返回用户信息hash
 	 */
-	public Map<String, String> getUserInfo(long userId) {
+	public User getUserInfo(long userId) {
 		Jedis jedis = null;
-		Map<String, String> userInfo = new HashMap<String, String>();
+		Map<String, String> userInfo = new HashMap<String, String>(16);
 		try {
 			jedis = getJedisIntance();
 			String key = String.format(USER_INFO_KEY, userId);
 			userInfo = jedis.hgetAll(key);
+			return ConverUtil.map2Object(userInfo, User.class);
 		} catch (Exception e) {
 			LOG.error("error get user_info_" + userId, e);
 		} finally {
 			closeJedis(jedis);
 		}
 
-		return userInfo;
+		return null;
 	}
 
 }

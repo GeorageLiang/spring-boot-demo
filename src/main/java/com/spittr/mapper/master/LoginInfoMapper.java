@@ -1,4 +1,4 @@
-package com.spittr.mapper.spittr.master;
+package com.spittr.mapper.master;
 
 import java.util.Map;
 
@@ -17,7 +17,12 @@ public interface LoginInfoMapper {
 	/**
 	 * 插入用户登录记录
 	 * 
-	 * @param params
+	 * @param params 入参集合，具体如下
+	 * <p>userId: 用户id</p>
+	 * <p>token: 用户登录令牌</p>
+	 * <p>ip: 登录ip地址</p>
+	 * <p>platform: 登录平台</p>
+	 * <p>loginTime: 登录时间</p>
 	 */
 	@Insert(value = "insert into `login_info` (`user_id`, `token`, `ip`, `platform`, `login_time`) "
 			+ "values (#{userId}, #{token}, #{ip}, #{platform}, #{loginTime})")

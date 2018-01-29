@@ -1,4 +1,4 @@
-package com.spittr.utils.constant;
+package com.spittr.constant;
 
 /**
  * 产品平台类型常量

@@ -1,4 +1,4 @@
-package com.spittr.utils.constant;
+package com.spittr.constant;
 
 /**
  * 请求响应码常量类

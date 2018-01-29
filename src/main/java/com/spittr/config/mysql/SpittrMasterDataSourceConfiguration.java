@@ -22,7 +22,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @date 2017年6月12日
  */
 @Configuration
-@MapperScan(basePackages = "com.spittr.mapper.spittr.master", sqlSessionFactoryRef = "spittrMasterSqlSessionFactory")
+@MapperScan(basePackages = "com.spittr.mapper.master", sqlSessionFactoryRef = "spittrMasterSqlSessionFactory")
 public class SpittrMasterDataSourceConfiguration {
 
 	@Bean(name = "spittrMasterDataSource")

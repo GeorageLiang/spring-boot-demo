@@ -1,7 +1,7 @@
 package com.spittr.utils;
 
+import com.spittr.constant.CodeConstant;
 import com.spittr.exception.SpittrException;
-import com.spittr.utils.constant.CodeConstant;
 import com.theft.code.utils.string.StringUtil;
 
 /**

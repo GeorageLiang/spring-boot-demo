@@ -1,4 +1,4 @@
-package com.spittr.mapper.spittr.master;
+package com.spittr.mapper.master;
 
 import java.util.List;
 import java.util.Map;
@@ -22,21 +22,15 @@ public interface MomentAdditionalMapper {
 	/**
 	 * 添加动态附加信息
 	 * 
-	 * @param momentId
-	 *            动态id
-	 * @param userId
-	 *            发布人id
-	 * @param type
-	 *            类型，1-图片，2-视频，3-音频
-	 * @param index
-	 *            排序索引
-	 * @param url
-	 *            附加资源地址
-	 * @param createdTime
-	 *            发布时间
-	 * @param updatedTime
-	 *            最后操作时间
-	 * @return 返回动态附加信息主键id
+	 * @param params 入参集合，具体如下
+	 * <p>momentId: 动态id</p>
+	 * <p>userId: 发布人id</p>
+	 * <p>type: 类型，1-图片，2-视频，3-音频</p>
+	 * <p>index: 排序索引</p>
+	 * <p>url: 附加资源地址</p>
+	 * <p>createdTime: 发布时间</p>
+	 * <p>updatedTime: 最后操作时间</p>
+	 * @return 返回动态附加信息主键id</p>
 	 */
 	@Insert(value = "insert into `moments_additional` (`moment_id`, `user_id`, `type`, `index`, `url`, `created_time`, `updated_time`) "
 			+ "values (#{momentId}, #{userId}, #{type}, #{index}, #{url}, #{createdTime}, #{updatedTime})")
@@ -46,7 +40,7 @@ public interface MomentAdditionalMapper {
 	/**
 	 * 根据动态id获取动态附加信息
 	 * 
-	 * @param id
+	 * @param momentId
 	 *            动态id
 	 * @return 返回动态附加对象
 	 */

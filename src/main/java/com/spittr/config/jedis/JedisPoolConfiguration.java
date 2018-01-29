@@ -30,7 +30,7 @@ public class JedisPoolConfiguration {
 	 */
 	@Bean("jedisPoolMap")
 	public Map<String, JedisPool> initJedisPool() {
-		Map<String, JedisPool> map = new HashMap<>();
+		Map<String, JedisPool> map = new HashMap<>(16);
 		for (JedisConfig jedisConfig : jedisConfigs) {
 			JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 			jedisPoolConfig.setMaxWaitMillis(jedisConfig.getPoolMaxWait());

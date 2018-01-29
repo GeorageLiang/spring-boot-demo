@@ -10,12 +10,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
+import com.spittr.constant.CodeConstant;
 import com.spittr.controller.AbstractApiController;
 import com.spittr.exception.SpittrException;
 import com.spittr.service.WeChatUserService;
 import com.spittr.utils.ParamUtil;
-import com.spittr.utils.constant.CodeConstant;
 
+/**
+ * 微信小程序控制器(未完成)
+ * @author chufei
+ * 2018年1月17日
+ */
 @RestController
 @RequestMapping(value = "/wechat/u")
 public class WeChatUserController extends AbstractApiController {

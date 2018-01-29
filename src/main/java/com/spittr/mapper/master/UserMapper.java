@@ -1,4 +1,4 @@
-package com.spittr.mapper.spittr.master;
+package com.spittr.mapper.master;
 
 import java.util.Map;
 
@@ -21,34 +21,45 @@ public interface UserMapper {
 	/**
 	 * 用户注册
 	 * 
-	 * @param param
-	 *            参数集合
+	 * @param params 入参集合，具体如下
+	 * <p>nickname: 昵称</p>
+	 * <p>password: 登录密码</p>
+	 * <p>gender: 性别，0-男，1-女，2-中</p>
+	 * <p>location: 所在地</p>
+	 * <p>profile: 个人简介</p>
+	 * <p>birthDay: 出生日期</p>
+	 * <p>registeredTime: 注册时间</p>
+	 * <p>phoneNum: 手机号</p>
+	 * <p>age: 年龄</p>
+	 * <p>registeredPlatform: 用户注册平台</p>
 	 */
 	@Insert(value = "insert into `user_info` (`nickname`, `password`, `gender`, `location`, `profile`, `birth_day`, `registered_time`, `phone_num`, `age`, `registered_platform`)"
 			+ "	values (#{nickname}, #{password}, #{gender}, #{location}, #{profile}, #{birthDay}, #{registeredTime}, #{phoneNum}, #{age}, #{registeredPlatform})")
 	@SelectKey(before = false, keyProperty = "userId", resultType = Long.class, statement = {
 			"SELECT LAST_INSERT_ID()" })
-	public void register(Map<String, Object> param);
+	public void register(Map<String, Object> params);
 
 	/**
 	 * 根据用户id登录
 	 * 
-	 * @param param
-	 *            参数集合
+	 * @param params 入参集合，具体如下
+	 * <p>userId: 用户id</p>
+	 * <p>password: 登录密码</p>
 	 * @return 返回用户id
 	 */
 	@Select(value = "select `user_id` from `user_info` where `user_id` = #{userId} and `password` = #{password}")
-	public Long loginByUserId(Map<String, Object> param);
+	public Long loginByUserId(Map<String, Object> params);
 
 	/**
 	 * 根据手机号登录
 	 * 
-	 * @param param
-	 *            参数集合
+	 * @param params 入参集合，具体如下
+	 * <p>phoneNum: 手机号</p>
+	 * <p>password: 登录密码</p>
 	 * @return 返回用户id
 	 */
 	@Select(value = "select `user_id` from `user_info` where `phone_num` = #{phoneNum} and `password` = #{password}")
-	public Long loginByPhone(Map<String, Object> param);
+	public Long loginByPhone(Map<String, Object> params);
 
 	/**
 	 * 判断昵称是否已存在

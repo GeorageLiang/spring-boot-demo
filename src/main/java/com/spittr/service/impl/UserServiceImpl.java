@@ -8,18 +8,22 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spittr.constant.CodeConstant;
 import com.spittr.exception.SpittrException;
-import com.spittr.mapper.spittr.master.LoginInfoMapper;
-import com.spittr.mapper.spittr.master.UserMapper;
+import com.spittr.mapper.master.LoginInfoMapper;
+import com.spittr.mapper.master.UserMapper;
 import com.spittr.model.User;
 import com.spittr.redis.UserRedisClient;
 import com.spittr.service.UserService;
 import com.spittr.utils.LogUtil;
-import com.spittr.utils.constant.CodeConstant;
-import com.spittr.utils.convert.UserConvert;
 import com.theft.code.utils.date.DateCalculateUtil;
 import com.theft.code.utils.encrypt.EncryptUtil;
 
+/**
+ * 用户相关业务service实现
+ * @author chufei
+ * 2018年1月17日
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -44,7 +48,7 @@ public class UserServiceImpl implements UserService {
 			throw new SpittrException("error to encrypt password", CodeConstant.EXCEPTION_SERVICE);
 		}
 		// 数据库插入用户注册信息
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<String, Object>(16);
 		params.put("nickname", nickname);
 		params.put("password", password);
 		params.put("gender", gender);
@@ -76,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User login(long userId, String phoneNum, String password) {
-		Map<String, Object> param = new HashMap<String, Object>();
+		Map<String, Object> param = new HashMap<String, Object>(16);
 		param.put("password", new EncryptUtil(password, null, null).encodeBySalt());
 		if (userId > 0) {
 			param.put("userId", userId);
@@ -89,8 +93,8 @@ public class UserServiceImpl implements UserService {
 		} else {
 			param.put("phoneNum", phoneNum);
 			try {
-				Long _userId = userMapper.loginByPhone(param);
-				userId = _userId != null ? _userId : 0;
+				Long tempUserId = userMapper.loginByPhone(param);
+				userId = tempUserId != null ? tempUserId : 0;
 			} catch (Exception e) {
 				LOG.error("error execute userMapper.loginByPhone, login-param: " + param.toString(), e);
 				throw new SpittrException("error execute userMapper.loginByPhone", e, CodeConstant.EXCEPTION_SERVICE);
@@ -112,7 +116,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void loginLog(long userId, String token, String ip, int platform) {
 		Date now = new Date();
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<String, Object>(16);
 		params.put("userId", userId);
 		params.put("token", token);
 		params.put("ip", ip);
@@ -151,9 +155,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserInfoById(long userId) {
 		try {
-			Map<String, String> userInfo = userRedis.getUserInfo(userId);
-			if (userInfo.isEmpty()) {
-				User user = userMapper.getUserInfoById(userId);
+			User user = userRedis.getUserInfo(userId);
+			if (user == null) {
+				user = userMapper.getUserInfoById(userId);
 				if (user != null) {
 					userRedis.saveUserInfo(userId, user.getNickname(), user.getGender(), user.getLocation(),
 							user.getProfile(), user.getPhoneNum(), getAge(user.getBirthDay()), user.getBirthDay());
@@ -162,7 +166,7 @@ public class UserServiceImpl implements UserService {
 				return null;
 			}
 
-			return UserConvert.map2User(userInfo);
+			return user;
 		} catch (Exception e) {
 			LOG.error("error execute userMapper.getUserInfoById, userId: " + userId, e);
 			throw new SpittrException("error execute userMapper.getUserInfoById", e, CodeConstant.EXCEPTION_SERVICE);
@@ -180,7 +184,7 @@ public class UserServiceImpl implements UserService {
 		// 获取出生年
 		int birthYear = Integer.valueOf(birthDay.split("-")[0]);
 		// 计算年龄
-		int age = DateCalculateUtil.getCurrentYear(new Date()) - birthYear + 1;
+		int age = DateCalculateUtil.getCurrentYear(new Date()) - birthYear;
 		return age;
 	}
 
