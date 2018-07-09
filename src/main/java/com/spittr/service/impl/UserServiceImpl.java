@@ -4,18 +4,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spittr.constant.CodeConstant;
 import com.spittr.exception.SpittrException;
-import com.spittr.mapper.master.LoginInfoMapper;
 import com.spittr.mapper.master.UserMapper;
 import com.spittr.model.User;
 import com.spittr.redis.UserRedisClient;
 import com.spittr.service.UserService;
-import com.spittr.utils.LogUtil;
 import com.theft.code.utils.date.DateCalculateUtil;
 import com.theft.code.utils.encrypt.EncryptUtil;
 
@@ -27,13 +26,10 @@ import com.theft.code.utils.encrypt.EncryptUtil;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserMapper userMapper;
-
-	@Autowired
-	private LoginInfoMapper loginInfoMapper;
 
 	@Autowired
 	private UserRedisClient userRedis;
@@ -111,23 +107,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return null;
-	}
-
-	@Override
-	public void loginLog(long userId, String token, String ip, int platform) {
-		Date now = new Date();
-		Map<String, Object> params = new HashMap<String, Object>(16);
-		params.put("userId", userId);
-		params.put("token", token);
-		params.put("ip", ip);
-		params.put("platform", platform);
-		params.put("loginTime", now);
-		try {
-			loginInfoMapper.loginLog(params);
-			LogUtil.loginInfoLog(userId, token, ip, platform, now);
-		} catch (Exception e) {
-			LogUtil.loginInfoErrorLog(userId, token, ip, platform, now);
-		}
 	}
 
 	@Override

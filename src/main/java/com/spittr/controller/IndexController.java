@@ -2,7 +2,8 @@ package com.spittr.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import com.spittr.exception.SpittrException;
 import com.spittr.model.User;
 import com.spittr.service.UserService;
 import com.spittr.utils.ParamUtil;
+import com.spittr.utils.RequestUtil;
 
 /**
  * 首页核心控制器 包括 用户注册 用户登录 用户登出
@@ -28,7 +30,7 @@ import com.spittr.utils.ParamUtil;
 @RequestMapping(value = "/")
 public class IndexController extends AbstractApiController {
 
-	private static Logger LOG = Logger.getLogger(IndexController.class);
+	private static Logger LOG = LoggerFactory.getLogger(IndexController.class);
 
 	@Autowired
 	private UserService userService;
@@ -91,7 +93,7 @@ public class IndexController extends AbstractApiController {
 				return response;
 			}
 
-			int platform = getPlatform(userAgent);
+			int platform = RequestUtil.getPlatform(userAgent);
 			// 注册用户信息
 			long userId = userService.register(nickname, password, gender, location, profile, phoneNum, birthDay,
 					platform);
@@ -146,10 +148,6 @@ public class IndexController extends AbstractApiController {
 
 			// TODO 获取用户登录token
 			String token = "";
-
-			String ip = getRemoteIp(request);
-			int platform = getPlatform(userAgent);
-			userService.loginLog(user.getUserId(), token, ip, platform);
 
 			response.setData(user);
 			response.setCode(CodeConstant.SUCCESS);

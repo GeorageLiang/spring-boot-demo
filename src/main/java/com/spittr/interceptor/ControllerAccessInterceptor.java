@@ -1,13 +1,14 @@
 package com.spittr.interceptor;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.spittr.utils.RequestUtil;
 
 /**
  * 控制器请求拦截器
@@ -17,13 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class ControllerAccessInterceptor implements HandlerInterceptor {
 
-	private static Logger LOG = Logger.getLogger("SPITTR-ACCESS-LOG");
+	private static Logger LOG = LoggerFactory.getLogger(ControllerAccessInterceptor.class);
 
 	@Override
 	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
 			throws Exception {
-		LOG.info("remote address: " + arg0.getRemoteAddr() + ", url: " + arg0.getRequestURL() + ", params: "
-				+ getRequestParams(arg0));
+		LOG.info("remote address: {}, url: {}, params: {}.", arg0.getRemoteAddr(), arg0.getRequestURL(), RequestUtil.getRequestParams(arg0));
 	}
 
 	@Override
@@ -37,19 +37,4 @@ public class ControllerAccessInterceptor implements HandlerInterceptor {
 		return true;
 	}
 
-	/**
-	 * 获取请求参数
-	 * 
-	 * @param request
-	 *            请求
-	 * @return
-	 */
-	protected String getRequestParams(HttpServletRequest request) {
-		Map<String, String[]> paramMap = request.getParameterMap();
-		StringBuffer stringBuffer = new StringBuffer();
-		for (String key : paramMap.keySet()) {
-			stringBuffer.append("param[" + key + "=" + paramMap.get(key) + "],");
-		}
-		return stringBuffer.toString();
-	}
 }

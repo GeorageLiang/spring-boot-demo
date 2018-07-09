@@ -1,6 +1,5 @@
 package com.spittr.controller;
 
-import com.google.gson.Gson;
 import com.spittr.constant.CodeConstant;
 
 /**
@@ -104,7 +103,15 @@ public class Response<T> {
 
 	@Override
 	public String toString() {
-		return "Response [code = " + code + ", message = " + message + ", data = " + new Gson().toJson(data) + "]";
+		return "Response [code = " + code + ", message = " + message + ", data = " + data + "]";
 	}
 
+	/**
+	 * 判断response返回是否正常
+	 * @return true返回正常, false返回报错
+	 */
+	public boolean isSuccess() {
+		return CodeConstant.SUCCESS.equals(code);
+	}
+	
 }

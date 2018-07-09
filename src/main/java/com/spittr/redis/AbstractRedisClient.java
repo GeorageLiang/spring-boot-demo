@@ -4,7 +4,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -17,7 +18,7 @@ import redis.clients.jedis.JedisPool;
  */
 public abstract class AbstractRedisClient {
 
-	private static final Logger LOG = Logger.getLogger(AbstractRedisClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractRedisClient.class);
 
 	@Resource(name = "jedisPoolMap")
 	private Map<String, JedisPool> jedisPoolMap;

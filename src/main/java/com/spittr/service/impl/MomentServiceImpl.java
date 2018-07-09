@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ import com.spittr.service.MomentService;
 @Service
 public class MomentServiceImpl implements MomentService {
 
-	private static final Logger LOG = Logger.getLogger(MomentServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MomentServiceImpl.class);
 
 	@Autowired
 	private MomentMapper momentMapper;

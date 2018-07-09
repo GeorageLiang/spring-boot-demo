@@ -48,20 +48,6 @@ public interface UserService {
 	public User login(long userId, String phoneNum, String password);
 
 	/**
-	 * 记录用户登录信息
-	 * 
-	 * @param userId
-	 *            用户id
-	 * @param token
-	 *            登录token
-	 * @param ip
-	 *            登录ip
-	 * @param platform
-	 *            登录平台
-	 */
-	public void loginLog(long userId, String token, String ip, int platform);
-
-	/**
 	 * 判断用户名是否占用
 	 * 
 	 * @param nickname

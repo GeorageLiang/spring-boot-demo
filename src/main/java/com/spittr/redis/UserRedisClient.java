@@ -3,7 +3,8 @@ package com.spittr.redis;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.spittr.config.jedis.UserJedisConfig;
@@ -21,7 +22,7 @@ import redis.clients.jedis.Jedis;
 @Repository
 public class UserRedisClient extends AbstractRedisClient {
 
-	private static final Logger LOG = Logger.getLogger(UserRedisClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UserRedisClient.class);
 
 	private static final String USER_INFO_KEY = "user_info_%s";
 

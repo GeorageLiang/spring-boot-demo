@@ -5,16 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.google.gson.Gson;
 import com.spittr.config.jedis.MomentJedisConfig;
 import com.spittr.model.Moment;
 import com.spittr.model.MomentAdditional;
 import com.spittr.utils.ConverUtil;
-import com.spittr.utils.serializer.GsonSerializerHelper;
-import com.spittr.utils.serializer.MomentAdditionalSerializer;
+import com.spittr.utils.serializer.JacksonSerializerUtil;
 import com.theft.code.utils.string.StringUtil;
 
 import redis.clients.jedis.Jedis;
@@ -28,7 +27,7 @@ import redis.clients.jedis.Jedis;
 @Repository
 public class MomentRedisClient extends AbstractRedisClient {
 
-	private static final Logger LOG = Logger.getLogger(MomentRedisClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MomentRedisClient.class);
 
 	private static final String MOMENT_KEY = "moment_%s";
 
@@ -77,8 +76,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 				hash.put("memo", memo);
 			}
 			if (!momentAdditionals.isEmpty()) {
-				Gson gson = GsonSerializerHelper.addSerializer(MomentAdditional.class, new MomentAdditionalSerializer());
-				hash.put("momentAdditionals", gson.toJson(momentAdditionals));
+				hash.put("momentAdditionals", JacksonSerializerUtil.toJson(momentAdditionals));
 			}
 			hash.put("createdTime", String.valueOf(createdTime.getTime()));
 			hash.put("updatedTime", String.valueOf(updatedTime.getTime()));
@@ -106,6 +104,9 @@ public class MomentRedisClient extends AbstractRedisClient {
 			jedis = getJedisIntance();
 			String key = String.format(MOMENT_KEY, momentId);
 			moment = jedis.hgetAll(key);
+			if (moment.isEmpty()) {
+				return null;
+			}
 			return ConverUtil.map2Object(moment, Moment.class);
 		} catch (Exception e) {
 			LOG.error("error get moment_" + momentId, e);
@@ -132,7 +133,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 			String key = String.format(MOMENT_KEY, momentId);
 			return jedis.hget(key, field);
 		} catch (Exception e) {
-			LOG.error("error get moment field, momentId: " + momentId + ", field: " + field, e);
+			LOG.error("error get moment field, momentId: {}, field: {}, exception: {}", momentId, field, e);
 		} finally {
 			closeJedis(jedis);
 		}
@@ -156,7 +157,7 @@ public class MomentRedisClient extends AbstractRedisClient {
 			String key = String.format(MOMENT_KEY, momentId);
 			jedis.hset(key, field, value);
 		} catch (Exception e) {
-			LOG.error("error set moment field, momentId: " + momentId + ", field: " + field + ", value: " + value, e);
+			LOG.error("error set moment field, momentId: {}, field: {}, value: {}, exception: {}", momentId, field, value, e);
 		} finally {
 			closeJedis(jedis);
 		}

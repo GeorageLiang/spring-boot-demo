@@ -1,6 +1,5 @@
 package com.spittr.utils;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +8,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.spittr.utils.serializer.JacksonSerializerUtil;
 
 /**
  * BeanUtils类型转化工具类
@@ -48,7 +47,9 @@ class CollectionConverter implements Converter {
 		}
 		if (value instanceof String) {
 			String json = (String) value;
-			return new Gson().fromJson(json, new TypeToken<Collection<T>>(){}.getType());
+			TypeReference<T> typeRef = new TypeReference<T>() {
+			};
+			return JacksonSerializerUtil.readValue(json, typeRef);
 		}
 		return null;
 	}

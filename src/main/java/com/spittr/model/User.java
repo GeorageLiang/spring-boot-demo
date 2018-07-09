@@ -3,6 +3,8 @@ package com.spittr.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * spittr用户实体对象
  * 
@@ -38,6 +40,7 @@ public class User implements Serializable {
 
 	private String nickname;
 
+	@JsonIgnoreProperties
 	private String password;
 
 	private int gender;

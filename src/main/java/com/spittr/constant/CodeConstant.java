@@ -13,31 +13,40 @@ public class CodeConstant {
 	 */
 	public static final String SUCCESS = "0000";
 
+	/***************COMMON SYSTEM CODE CONSTANT**************/
+	
+	/**
+	 * 服务器异常
+	 */
+	public static final String SERVER_ERROR = "0001";
+	
 	/**
 	 * 获取参数异常
 	 */
-	public static final String EXCEPTION_GET_PARAM = "0001";
+	public static final String EXCEPTION_GET_PARAM = "0002";
 
 	/**
 	 * 参数超出范围
 	 */
-	public static final String PARAM_OUT_OF_RANGE = "0002";
+	public static final String PARAM_OUT_OF_RANGE = "0003";
 
 	/**
 	 * 业务处理异常
 	 */
-	public static final String EXCEPTION_SERVICE = "0003";
+	public static final String EXCEPTION_SERVICE = "0004";
 
 	/**
 	 * 注册失败
 	 */
-	public static final String FAIL_REGISTER = "0004";
+	public static final String FAIL_REGISTER = "0005";
 
 	/**
 	 * 登录失败
 	 */
-	public static final String FAIL_LOGIN = "0005";
+	public static final String FAIL_LOGIN = "0006";
 
+	/***************USER SERVICE CODE CONSTANT**************/
+	
 	/**
 	 * 用户昵称为空
 	 */

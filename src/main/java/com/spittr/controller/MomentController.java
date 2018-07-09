@@ -1,8 +1,12 @@
 package com.spittr.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonObject;
 import com.spittr.constant.CodeConstant;
 import com.spittr.exception.SpittrException;
 import com.spittr.model.Moment;
@@ -27,14 +30,14 @@ import com.spittr.utils.ParamUtil;
 @RequestMapping(value = "/moment")
 public class MomentController extends AbstractApiController {
 
-	private static final Logger LOG = Logger.getLogger(MomentController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MomentController.class);
 
 	@Autowired
 	private MomentService momentService;
 
 	@RequestMapping(value = "/publish", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Moment> publishMoment(HttpServletRequest request, @RequestParam("token") String token,
+	public String publishMoment(HttpServletRequest request, @RequestParam("token") String token,
 			@RequestParam(value = "userId", required = false, defaultValue = "0") long userId,
 			@RequestParam(value = "content", required = false) String content,
 			@RequestParam(value = "isDisplay", required = false, defaultValue = "0") int isDisplay,
@@ -42,7 +45,6 @@ public class MomentController extends AbstractApiController {
 			@RequestParam(value = "addIndexs", required = false) int[] addIndexs,
 			@RequestParam(value = "addUrls", required = false) String[] addUrls) {
 		// TODO 校验token
-		Response<Moment> response = new Response<>();
 
 		try {
 			userId = ParamUtil.toLong("userId", userId, true, 0, CodeConstant.ERR_USERID_MISS, 1, Long.MAX_VALUE);
@@ -53,12 +55,10 @@ public class MomentController extends AbstractApiController {
 			addUrls = ParamUtil.toStringArray("addUrls", addUrls, false, new String[0], null, 0, 100);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
-			response.setCode(e.getErrorCode());
-			return response;
+			return writeErrorJsonObject(request, e.getErrorCode(), "");
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
-			response.setCode(CodeConstant.EXCEPTION_GET_PARAM);
-			return response;
+			return writeErrorJsonObject(request, CodeConstant.EXCEPTION_GET_PARAM, "");
 		}
 
 		// 如果需要上传附加信息
@@ -66,60 +66,55 @@ public class MomentController extends AbstractApiController {
 			int indexLength = addIndexs.length;
 			if (indexLength < 1) {
 				// 附加信息数量不能少于1
-				response.setCode("2002");
-				return response;
+				return writeErrorJsonObject(request, "2002", "");
 			}
 			if (indexLength != addUrls.length) {
 				// 附加信息数量无法对应
-				response.setCode("2003");
-				return response;
+				return writeErrorJsonObject(request, "2003", "");
 			}
 		}
 
 		try {
 			long momentId = momentService.addMoment(userId, content, isDisplay, addType, addIndexs, addUrls);
 			if (momentId > 0) {
+				Response<Object> response = new Response<>();
 				response.setData(momentService.getMomentByMomentId(momentId));
 				response.setCode(CodeConstant.SUCCESS);
+				return writeJsonObject(request, response);
 			} else {
 				// 动态发布失败
-				response.setCode("2004");
+				return writeErrorJsonObject(request, "2004", "发布失败");
 			}
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage(), e);
-			response.setCode(e.getErrorCode());
+			return writeErrorJsonObject(request, e.getErrorCode(), "");
 		}
-
-		return response;
 	}
 
 	@RequestMapping(value = "/{momentId}", method = RequestMethod.GET)
 	@ResponseBody
-	public Response<Moment> getMoment(HttpServletRequest request, @PathVariable(value = "momentId") long momentId) {
-		Response<Moment> response = new Response<>();
+	public String getMoment(HttpServletRequest request, @PathVariable(value = "momentId") long momentId) {
 
 		try {
 			momentId = ParamUtil.toLong("momentId", momentId, true, 0L, "2004", 1, Long.MAX_VALUE);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
-			response.setCode(e.getErrorCode());
-			return response;
+			return writeErrorJsonObject(request, e.getErrorCode(), "");
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
-			response.setCode(CodeConstant.EXCEPTION_GET_PARAM);
-			return response;
+			return writeErrorJsonObject(request, CodeConstant.EXCEPTION_GET_PARAM, "");
 		}
 
 		try {
 			Moment moment = momentService.getMomentByMomentId(momentId);
+			Response<Object> response = new Response<>();
 			response.setData(moment);
 			response.setCode(CodeConstant.SUCCESS);
+			return writeJsonObject(request, response);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage(), e);
-			response.setCode(e.getErrorCode());
+			return writeErrorJsonObject(request, e.getErrorCode(), "");
 		}
-
-		return response;
 	}
 
 	@RequestMapping(value = "/display", method = RequestMethod.POST)
@@ -127,34 +122,33 @@ public class MomentController extends AbstractApiController {
 	public String displayMoment(HttpServletRequest request, @RequestParam("token") String token,
 			@RequestParam(value = "momentId", required = false) long momentId) {
 		// TODO 校验用户token
-		JsonObject result = new JsonObject();
 
 		try {
 			momentId = ParamUtil.toLong("momentId", momentId, true, 0L, "2004", 1, Long.MAX_VALUE);
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage());
-			result.addProperty("code", e.getErrorCode());
-			return result.toString();
+			return writeErrorJsonObject(request, e.getErrorCode(), "");
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
-			result.addProperty("code", CodeConstant.EXCEPTION_GET_PARAM);
-			return result.toString();
+			return writeErrorJsonObject(request, CodeConstant.EXCEPTION_GET_PARAM, "");
 		}
 
 		try {
 			int isDisplay = momentService.displayMoment(momentId);
 			if (isDisplay < 0) {
-				result.addProperty("code", "2006");
+				return writeErrorJsonObject(request, "2006", "设置失败");
 			} else {
-				result.addProperty("isDisplay", isDisplay);
-				result.addProperty("code", CodeConstant.SUCCESS);
+				Response<Object> response = new Response<>();
+				Map<String, Object> data = new HashMap<>(16);
+				data.put("isDisplay", isDisplay);
+				response.setData(data);
+				response.setMessage(CodeConstant.SUCCESS);
+				return writeJsonObject(request, response);
 			}
 		} catch (SpittrException e) {
 			LOG.error(e.getMessage(), e);
-			result.addProperty("code", e.getErrorCode());
+			return writeErrorJsonObject(request, e.getErrorCode(), "");
 		}
-
-		return result.toString();
 	}
 
 }
